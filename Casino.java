@@ -12,9 +12,13 @@ private double money;
     return money;
   }
   
-  public void changeMoney(double cash)
+  public void addMoney(double toAdd)
   {
-    money = cash;
+    money += toAdd;
+  }
+  public void removeMoney(double toRemove)
+  {
+      money -= toRemove;
   }
   
 }
