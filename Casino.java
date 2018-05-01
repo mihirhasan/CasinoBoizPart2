@@ -9,7 +9,7 @@ private double money;
   
   public double getMoney()
   {
-    return money();
+    return money;
   }
   
   public void changeMoney(double cash)
