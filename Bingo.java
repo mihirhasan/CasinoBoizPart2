@@ -55,7 +55,7 @@ public void drawBoard()
     {
       for (int row = 0; row < 5; row++)
       {
-        if( board[row][col] = 0)
+        if( board[row][col] == 0)
         {
           check++
         }
@@ -67,9 +67,10 @@ public void drawBoard()
       check =0;
     }
     
+    check = 0;
     for (int both = 0; both < 5; both++)
     {
-      if ( board[both][both] = 0)
+      if ( board[both][both] == 0)
       {
         check++;
       }
@@ -79,7 +80,20 @@ public void drawBoard()
       }
     }
     
-    
+    check = 0;
+    int down = 4;
+    for (int other = 0; other < 5; other++)
+    {
+      if(board[down][other] == 0)
+      {
+        check++;
+      }
+      if (check == 5)
+      {
+        return true;
+      }
+      down--;
+    }
     
     
   }
