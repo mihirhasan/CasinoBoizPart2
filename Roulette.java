@@ -6,55 +6,116 @@ public class Roulette
 {
     private HashMap<Integer, Number> board;
     
-    private int bet;
+    private int betType;
+    
+    private int betAmount;
 
-
+    private int betSquare;
+    
     public Roulette()
     {
-        board = new HashMap<Integer, Number>();
+        board = new HashMap<Integer, Integer>();
         
-        board.put( 0, new Number( 0, "green") );
-        board.put( 1, new Number( 1, "red") );
-        board.put( 2, new Number( 2, "black") );
-        board.put( 3, new Number( 3, "red") );
-        board.put( 4, new Number( 4, "black") );
-        board.put( 5, new Number( 5, "red") );
-        board.put( 6, new Number( 6, "black") );
-        board.put( 7, new Number( 7, "red") );
-        board.put( 8, new Number( 8, "black") );
-        board.put( 9, new Number( 9, "red") );
-        board.put( 10, new Number( 10, "black") );
-        board.put( 11, new Number( 11, "black") );
-        board.put( 12, new Number( 12, "red") );
-        board.put( 13, new Number( 13, "black") );
-        board.put( 14, new Number( 14, "red") );
-        board.put( 15, new Number( 15, "black") );
-        board.put( 16, new Number( 16, "red") );
-        board.put( 17, new Number( 17, "black") );
-        board.put( 18, new Number( 18, "red") );
-        board.put( 19, new Number( 19, "red") );
-        board.put( 20, new Number( 20, "black") );
-        board.put( 21, new Number( 21, "red") );
-        board.put( 22, new Number( 22, "black") );
-        board.put( 23, new Number( 23, "red") );
-        board.put( 24, new Number( 24, "black") );
-        board.put( 25, new Number( 25, "red") );
-        board.put( 26, new Number( 26, "black") );
-        board.put( 27, new Number( 27, "red") );
-        board.put( 28, new Number( 28, "black") );
-        board.put( 29, new Number( 29, "black") );
-        board.put( 30, new Number( 30, "red") );
-        board.put( 31, new Number( 31, "black") );
-        board.put( 32, new Number( 32, "red") );
-        board.put( 33, new Number( 33, "black") );
-        board.put( 34, new Number( 34, "red") );
-        board.put( 35, new Number( 35, "black") );
-        board.put( 36, new Number( 36, "red") );
+        board.put( 0, 0 );
+        board.put( 1, 1 );
+        board.put( 2, 2 );
+        board.put( 3, 1 );
+        board.put( 4, 2);
+        board.put( 5, 1) ;
+        board.put( 6, 2 );
+        board.put( 7, 1) ;
+        board.put( 8, 2 );
+        board.put( 9, 1) ;
+        board.put( 10, 2) ;
+        board.put( 11, 2) ;
+        board.put( 12, 1 );
+        board.put( 13, 2 );
+        board.put( 14, 1 );
+        board.put( 15, 2 );
+        board.put( 16, 1 );
+        board.put( 17, 2 );
+        board.put( 18, 1 );
+        board.put( 19, 1 );
+        board.put( 20, 2 );
+        board.put( 21, 1 );
+        board.put( 22, 2 );
+        board.put( 23, 1 );
+        board.put( 24, 2 );
+        board.put( 25, 1 );
+        board.put( 26, 2 );
+        board.put( 27, 1);
+        board.put( 28, 2 );
+        board.put( 29, 2 );
+        board.put( 30, 1 );
+        board.put( 31, 2 );
+        board.put( 32, 1);
+        board.put( 33, 2 );
+        board.put( 34, 1);
+        board.put( 35, 2 );
+        board.put( 36, 1 );
     }
     
-    public void bet(int bet)
+    /**
+    betTypes are here
+    1 = number (35:1)
+    2 = column (2:1)
+    3 = color //1 = red and 2 = black (1:1)
+    4 = even or odd //0 = even and 1 = odd (1:1) 
+    5 = 1 to 18 (1:1) //18 = value
+    6 = 19 to 36 (1:1) // 36 = value
+    
+    @param betA is the Amount to bet
+    @param betT is the type of bet
+    @param betS is the square the bet is placed on
+    
+    @return the amount that should be paid or 0, and if they don't have enough money, or it is under the minimum. 
+    */
+    public int bet(int betA, int betT, int betS)
     {
+        betAmount = betA;
+        betType = betT; 
+        betSquare = betS;
         
+        if ( betAmount >= 5 && betAmount >= coin )//coin amount 
+        {
+            int roll = (int)(Math.random() * 36);
+            if( betType == 1 && roll == betSquare)
+            {
+                return betAmount * 36;
+            }
+            else if( betType == 2)
+            {
+                if (roll / 12 == betSquare)
+                {
+                    return betAmount * 3;
+                }
+            }
+            else if( betType == 3)
+            {
+                if( board.get(roll) == betSquare)
+                {
+                    return betAmount * 2;
+                }
+            }
+            else if( betType == 4)
+            {
+                if( roll % 2 == betSquare)
+                {
+                    return betAmount * 2;
+                }
+            }
+            else if( betType == 5 || betType == 6)
+            {
+                if ( roll <= betSquare && roll > (betSquare - 18))
+                {
+                    return betAmount *2;
+                }
+            }
+        }
+        else
+        {
+            return -1;
+        }
     }
     
     
