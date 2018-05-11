@@ -68,7 +68,7 @@ public class Roulette
     @param betT is the type of bet
     @param betS is the square the bet is placed on
     
-    @return the amount that should be paid or 0, and if they don't have enough money, or it is under the minimum. 
+    @return the amount that should be paid or 0, and if they don't have enough money, or it is under the minimum it will return -1. 
     */
     public int bet(int betA, int betT, int betS)
     {
