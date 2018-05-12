@@ -1,0 +1,149 @@
+package test;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import javax.swing.JTextArea;
+import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import javax.swing.JSplitPane;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+
+
+public class bjWin
+{
+
+    private JFrame frame;
+
+    Blackjack bj = new Blackjack();
+
+    Casino casi = new Casino();
+
+    private JTextField bet;
+
+
+    /**
+     * Launch the application.
+     */
+    public static void main( String[] args )
+    {
+        EventQueue.invokeLater( new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    bjWin window = new bjWin();
+                    window.frame.setVisible( true );
+                }
+                catch ( Exception e )
+                {
+                    e.printStackTrace();
+                }
+            }
+        } );
+    }
+
+
+    /**
+     * Create the application.
+     */
+    public bjWin()
+    {
+        initialize();
+    }
+
+
+    /**
+     * Initialize the contents of the frame.
+     */
+    private void initialize()
+    {
+        frame = new JFrame();
+        frame.setBounds( 100, 100, 450, 300 );
+        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.columnWidths = new int[] { 0, 450, 0 };
+        gridBagLayout.rowHeights = new int[] { 16, 26, 0, 0, 0, 0, 0, 0, 0 };
+        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+            Double.MIN_VALUE };
+        frame.getContentPane().setLayout( gridBagLayout );
+
+        JLabel coinLabel = new JLabel( "Coin:" );
+        GridBagConstraints gbc_coinLabel = new GridBagConstraints();
+        gbc_coinLabel.anchor = GridBagConstraints.NORTHEAST;
+        gbc_coinLabel.insets = new Insets( 0, 0, 5, 0 );
+        gbc_coinLabel.gridx = 1;
+        gbc_coinLabel.gridy = 0;
+        frame.getContentPane().add( coinLabel, gbc_coinLabel );
+
+        coinLabel.setText( "Coin: " + casi.getMoney() );
+        // bet event handler
+        bet = new JTextField();
+        GridBagConstraints gbc_bet = new GridBagConstraints();
+        gbc_bet.insets = new Insets( 0, 0, 5, 0 );
+        gbc_bet.gridx = 1;
+        gbc_bet.gridy = 1;
+        frame.getContentPane().add( bet, gbc_bet );
+        bet.setColumns( 10 );
+
+        // Enter Bet Handler
+        JButton enterBet = new JButton( "Enter" );
+        enterBet.addActionListener( new ActionListener()
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                int moneyBet = Integer.parseInt( bet.getText() );
+                casi.removeMoney( moneyBet );
+                bet.setEditable( false );
+            }
+        } );
+        GridBagConstraints gbc_btnEnter = new GridBagConstraints();
+        gbc_btnEnter.insets = new Insets( 0, 0, 5, 0 );
+        gbc_btnEnter.gridx = 1;
+        gbc_btnEnter.gridy = 2;
+        frame.getContentPane().add( enterBet, gbc_btnEnter );
+
+        JSplitPane splitPane = new JSplitPane();
+        GridBagConstraints gbc_splitPane = new GridBagConstraints();
+        gbc_splitPane.fill = GridBagConstraints.VERTICAL;
+        gbc_splitPane.gridx = 1;
+        gbc_splitPane.gridy = 7;
+        frame.getContentPane().add( splitPane, gbc_splitPane );
+        // hit event handler
+        JButton hit = new JButton( "          Hit          " );
+        hit.setHorizontalAlignment( SwingConstants.LEFT );
+        hit.addActionListener( new ActionListener()
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                bj.hit( bj.getPlayer() );
+            }
+        } );
+        splitPane.setLeftComponent( hit );
+
+        JButton stay = new JButton( "         Stay          " );
+        stay.addActionListener( new ActionListener()
+        {
+
+            public void actionPerformed( ActionEvent e )
+            {
+            }
+        } );
+        splitPane.setRightComponent( stay );
+    }
+
+}
