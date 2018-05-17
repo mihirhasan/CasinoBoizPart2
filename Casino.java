@@ -1,17 +1,25 @@
+package test;
+
+
 public class Casino
+
 {
-private double money;
+private int money;
   
-  public Casino()
+  public Casino(int num)
   {
-    money =1000;
+    money = num;
   }
   
-  public double getMoney()
+  public int getMoney()
   {
     return money;
   }
-  
+public void setMoney(int num)
+{
+    money = num;
+}
+
   public void addMoney(double toAdd)
   {
     money += toAdd;
