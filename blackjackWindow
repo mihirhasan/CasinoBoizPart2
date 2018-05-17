@@ -1,149 +1,275 @@
 package test;
 
-import java.awt.EventQueue;
+import java.awt.*;
 
-import javax.swing.JFrame;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.BorderLayout;
-import javax.swing.JTextArea;
-import javax.swing.JLabel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.layout.FormSpecs;
-import javax.swing.JSplitPane;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.SwingConstants;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import java.util.ArrayList;
+import javax.swing.JLabel;
 
 
-public class bjWin
+public class BjackWindow extends JFrame implements ActionListener
 {
+    private static final String PROMPT = ">> ";
 
-    private JFrame frame;
+    private JButton betBtn;
 
-    Blackjack bj = new Blackjack();
-
-    Casino casi = new Casino();
+    private JButton hit, stay;
 
     private JTextField bet;
 
+    private JTextArea msgArea;
+
+    private Blackjack blackjack;
+
 
     /**
-     * Launch the application.
+     * Constructs a new blackjack window
+     * 
+     * @param blackjack
+     *            blackjack class controls functionality
      */
-    public static void main( String[] args )
+    public BjackWindow( Blackjack bj )
     {
-        EventQueue.invokeLater( new Runnable()
+        super( "Blackjack" );
+
+        blackjack = bj;
+
+        addWindowListener( new WindowAdapter()
         {
-            public void run()
+            public void windowClosing( WindowEvent e )
             {
-                try
-                {
-                    bjWin window = new bjWin();
-                    window.frame.setVisible( true );
-                }
-                catch ( Exception e )
-                {
-                    e.printStackTrace();
-                }
             }
         } );
+
+        JPanel panel = new JPanel();
+        GridBagLayout gbLayout = new GridBagLayout();
+        panel.setLayout( gbLayout );
+        panel.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel label = new JLabel( "Bet Amount:  ", JLabel.RIGHT );
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbLayout.setConstraints( label, gbc );
+        panel.add( label );
+        bet = new JTextField( 5 );
+        bet.setBackground( Color.cyan );
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+        gbLayout.setConstraints( bet, gbc );
+        panel.add( bet );
+
+        JLabel filler = new JLabel( " " );
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridwidth = 3;
+        gbLayout.setConstraints( filler, gbc );
+        panel.add( filler );
+
+        label = new JLabel( "Move:", JLabel.RIGHT );
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+        gbLayout.setConstraints( label, gbc );
+        panel.add( label );
+
+        filler = new JLabel( " " );
+        gbc.gridy = 6;
+        gbc.gridx = 0;
+        gbc.gridwidth = 3;
+        gbLayout.setConstraints( filler, gbc );
+        panel.add( filler );
+
+        ButtonGroup gr = new ButtonGroup();
+        hit = new JButton( "Hit" );
+        stay = new JButton( "Stay" );
+
+        hit.addActionListener( this );
+        stay.addActionListener( this );
+
+        gr.add( hit );
+        gr.add( stay );
+
+        gbc.gridy = 4;
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+
+        gbLayout.setConstraints( hit, gbc );
+        panel.add( hit );
+        hit.setActionCommand( "Hit" );
+        gbc.gridy = 5;
+
+        gbLayout.addLayoutComponent( stay, gbc );
+        panel.add( stay );
+        stay.setActionCommand( "Stay" );
+        gbc.gridy = 6;
+
+        betBtn = new JButton( "BET" );
+        betBtn.addActionListener( this );
+        betBtn.setActionCommand( "bet" );
+        gbc.gridy = 11;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbLayout.setConstraints( betBtn, gbc );
+        panel.add( betBtn );
+
+        msgArea = new JTextArea( 10, 30 );
+        msgArea.setLineWrap( true );
+        msgArea.setWrapStyleWord( true );
+        msgArea.setEditable( false );
+        msgArea.setBorder( new EmptyBorder( 5, 10, 5, 10 ) );
+        JScrollPane areaScrollPane = new JScrollPane( msgArea );
+        areaScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+        areaScrollPane.setBorder( new EmptyBorder( 5, 0, 5, 0 ) );
+
+        Box b = Box.createHorizontalBox();
+        b.add( panel );
+        b.add( areaScrollPane );
+        Container c = getContentPane();
+        c.add( b );
+
+        int x = (int)( Math.random() * 500 );
+        int y = (int)( Math.random() * 300 );
+        setBounds( x, y, 500, 280 );
+        
+        
+        showMessage("This is a blackjack game. You will be playing against the dealer. "
+            + "Enter a bet in the text box and press the 'BET' button to start the game. "
+            + "Click 'Hit' to take another card from the deck, and 'Stay' to stop drawing.");
+        setVisible( true );
+        
+       
     }
 
 
     /**
-     * Create the application.
+     * Displays a message in this window's text area.
+     * 
+     * @param msg
+     *            the message to be displayed.
      */
-    public bjWin()
+    public void showMessage( String msg )
     {
-        initialize();
+        msgArea.append( msg + "\n\n" );
+    }
+
+
+    // no line
+    public void showMessage2( String msg )
+    {
+        msgArea.append( msg );
     }
 
 
     /**
-     * Initialize the contents of the frame.
+     * Processes GUI events in this window.
+     * 
+     * @param e
+     *            an event.
      */
-    private void initialize()
+    public void actionPerformed( ActionEvent e )
     {
-        frame = new JFrame();
-        frame.setBounds( 100, 100, 450, 300 );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 450, 0 };
-        gridBagLayout.rowHeights = new int[] { 16, 26, 0, 0, 0, 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-            Double.MIN_VALUE };
-        frame.getContentPane().setLayout( gridBagLayout );
-
-        JLabel coinLabel = new JLabel( "Coin:" );
-        GridBagConstraints gbc_coinLabel = new GridBagConstraints();
-        gbc_coinLabel.anchor = GridBagConstraints.NORTHEAST;
-        gbc_coinLabel.insets = new Insets( 0, 0, 5, 0 );
-        gbc_coinLabel.gridx = 1;
-        gbc_coinLabel.gridy = 0;
-        frame.getContentPane().add( coinLabel, gbc_coinLabel );
-
-        coinLabel.setText( "Coin: " + casi.getMoney() );
-        // bet event handler
-        bet = new JTextField();
-        GridBagConstraints gbc_bet = new GridBagConstraints();
-        gbc_bet.insets = new Insets( 0, 0, 5, 0 );
-        gbc_bet.gridx = 1;
-        gbc_bet.gridy = 1;
-        frame.getContentPane().add( bet, gbc_bet );
-        bet.setColumns( 10 );
-
-        // Enter Bet Handler
-        JButton enterBet = new JButton( "Enter" );
-        enterBet.addActionListener( new ActionListener()
+        ArrayList<Card> playerHand = blackjack.getPlayer();
+        if ( e.getActionCommand().equals( "Hit" ) )
         {
-            public void actionPerformed( ActionEvent e )
+            blackjack.hit( blackjack.getPlayer() );
+            showMessage( "You chose to Hit!" );
+            showMessage2( "Current Hand: " );
+            for ( int i = 0; i < playerHand.size(); i++ )
             {
-                int moneyBet = Integer.parseInt( bet.getText() );
-                casi.removeMoney( moneyBet );
+                showMessage2( playerHand.get( i ).getName() + "  " );
+            }
+            showMessage("");
+            if ( blackjack.getSum( playerHand ) > 21 )
+            {
+                showMessage( "You busted! Game over. Enter a new bet to play again." );
+                bet.setEditable( true );
+
+            }
+        }
+        else if ( e.getActionCommand().equals( "Stay" ) )
+        {
+            while ( blackjack.getSum( blackjack.getDealer() ) < 16 )
+            {
+                blackjack.hit( blackjack.getDealer() );
+            }
+
+            if ( blackjack.getSum( playerHand ) > blackjack.getSum( blackjack.getDealer() ) )
+            {
+                showMessage( "You won!" );
+                blackjack.player.addMoney( Integer.parseInt( bet.getText() )* 2 );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+            }
+            else if ( blackjack.getSum( playerHand ) < blackjack.getSum( blackjack.getDealer() ) )
+            {
+                showMessage( "You lost to the dealer!" );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+                if(blackjack.player.getMoney() > 0)
+                {
+                    showMessage("Enter a new bet to play again");
+                    bet.setEditable( true );
+
+                }
+                
+                if(blackjack.player.getMoney() < 1)
+                {
+                    showMessage("You are out of money. Enter a new bet to restart the game");
+                    bet.setEditable( true );
+                    blackjack.player.setMoney( 1000 );
+                }
+
+            }
+            else
+            {
+                showMessage( "You tied with the dealer!" );
+                blackjack.player.addMoney( Integer.parseInt( bet.getText() ) );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+            }
+        }
+
+        else if ( e.getActionCommand().equals( "bet" ) )
+        {
+
+            if ( Integer.parseInt( bet.getText() ) < 1 )
+            {
+                showMessage( "Please enter a valid bet" );
+            }
+            else if ( blackjack.player.getMoney() < Integer.parseInt( bet.getText() ) )
+            {
+                showMessage( "Sorry, you don't have enough money for that." );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+            }
+            else
+            {
+                blackjack.player.removeMoney( Integer.parseInt( bet.getText() ) );
+                showMessage( "Balance: " + ( blackjack.player.getMoney() ) );
                 bet.setEditable( false );
-            }
-        } );
-        GridBagConstraints gbc_btnEnter = new GridBagConstraints();
-        gbc_btnEnter.insets = new Insets( 0, 0, 5, 0 );
-        gbc_btnEnter.gridx = 1;
-        gbc_btnEnter.gridy = 2;
-        frame.getContentPane().add( enterBet, gbc_btnEnter );
+                showMessage2( "Current hand: " );
+                for ( int i = 0; i < playerHand.size(); i++ )
+                {
+                    showMessage2( playerHand.get( i ).getName() + "  " );
+                }
+                showMessage("");
 
-        JSplitPane splitPane = new JSplitPane();
-        GridBagConstraints gbc_splitPane = new GridBagConstraints();
-        gbc_splitPane.fill = GridBagConstraints.VERTICAL;
-        gbc_splitPane.gridx = 1;
-        gbc_splitPane.gridy = 7;
-        frame.getContentPane().add( splitPane, gbc_splitPane );
-        // hit event handler
-        JButton hit = new JButton( "          Hit          " );
-        hit.setHorizontalAlignment( SwingConstants.LEFT );
-        hit.addActionListener( new ActionListener()
-        {
-            public void actionPerformed( ActionEvent e )
-            {
-                bj.hit( bj.getPlayer() );
             }
-        } );
-        splitPane.setLeftComponent( hit );
-
-        JButton stay = new JButton( "         Stay          " );
-        stay.addActionListener( new ActionListener()
-        {
-
-            public void actionPerformed( ActionEvent e )
-            {
-            }
-        } );
-        splitPane.setRightComponent( stay );
+        }
     }
 
 }
