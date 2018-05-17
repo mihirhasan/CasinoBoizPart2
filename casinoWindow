@@ -2,22 +2,51 @@ package test;
 
 import java.awt.*;
 
+
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
-
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 
 
-public class casinoWindow extends JFrame implements ActionListener
+public class BjackWindow extends JFrame implements ActionListener
 {
-    private JButton blackjack, bingo, slotMachine, roulette;
-    // blackjackTester test = new blackjackTester();
+    private static final String PROMPT = ">> ";
+
+    private JButton betBtn;
+
+    private JButton hit, stay, back;
+
+    private JTextField bet;
+
+    private JTextArea msgArea;
+
+    private Blackjack blackjack;
 
 
-    public casinoWindow()
+    /**
+     * Constructs a new blackjack window
+     * 
+     * @param blackjack
+     *            blackjack class controls functionality
+     */
+    public BjackWindow( Blackjack bj )
     {
-        super( "Frame Creator" );
+        super( "Blackjack" );
+
+        blackjack = bj;
+
         addWindowListener( new WindowAdapter()
         {
             public void windowClosing( WindowEvent e )
@@ -33,14 +62,21 @@ public class casinoWindow extends JFrame implements ActionListener
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+
+        JLabel label = new JLabel( "Bet Amount:  ", JLabel.RIGHT );
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-
+        gbLayout.setConstraints( label, gbc );
+        panel.add( label );
+        bet = new JTextField( 5 );
+        bet.setBackground( Color.cyan );
         gbc.gridy = 0;
         gbc.gridx = 1;
         gbc.gridwidth = 1;
+        gbLayout.setConstraints( bet, gbc );
+        panel.add( bet );
 
         JLabel filler = new JLabel( " " );
         gbc.gridy = 1;
@@ -49,9 +85,14 @@ public class casinoWindow extends JFrame implements ActionListener
         gbLayout.setConstraints( filler, gbc );
         panel.add( filler );
 
+
+        label = new JLabel( "Move:", JLabel.RIGHT );
         gbc.gridy = 4;
         gbc.gridx = 0;
         gbc.gridwidth = 1;
+        gbLayout.setConstraints( label, gbc );
+        panel.add( label );
+        
 
         filler = new JLabel( " " );
         gbc.gridy = 6;
@@ -60,100 +101,208 @@ public class casinoWindow extends JFrame implements ActionListener
         gbLayout.setConstraints( filler, gbc );
         panel.add( filler );
 
+
         ButtonGroup gr = new ButtonGroup();
-        blackjack = new JButton( "BlackJack" );
-        // bingo = new JButton("Bingo");
-        roulette = new JButton( "Roulette" );
-        slotMachine = new JButton( "Slot Machine" );
+        hit = new JButton( "Hit" );
+        stay = new JButton( "Stay" );
+        
+        hit.addActionListener( this );
+        stay.addActionListener( this );
 
-        blackjack.addActionListener( this );
-        gr.add( blackjack );
+        gr.add( hit );
+        gr.add( stay );
+        
 
-        roulette.addActionListener( this );
-        gr.add( roulette );
-
-        slotMachine.addActionListener( this );
-        gr.add( slotMachine );
-
+        
         gbc.gridy = 4;
         gbc.gridx = 1;
         gbc.gridwidth = 1;
 
-        gbLayout.setConstraints( blackjack, gbc );
-        panel.add( blackjack );
-        blackjack.setActionCommand( "Blackjack" );
+
+        
+        gbLayout.setConstraints( hit, gbc );
+        panel.add( hit );
+        hit.setActionCommand( "Hit" );
         gbc.gridy = 5;
 
-        gbLayout.setConstraints( roulette, gbc );
-        panel.add( roulette );
-        roulette.setActionCommand( "Roulette" );
+        gbLayout.addLayoutComponent( stay, gbc );
+        panel.add( stay );
+        stay.setActionCommand( "Stay" );
         gbc.gridy = 6;
 
-        gbLayout.setConstraints( slotMachine, gbc );
-        panel.add( slotMachine );
-        slotMachine.setActionCommand( "Slots" );
-        gbc.gridy = 7;
 
-        /**
-         * gbLayout.setConstraints( bingo, gbc ); panel.add( bingo );
-         * blackjack.setActionCommand( "Bingo" ); gbc.gridy = 6;
-         */
-
-        gbc.gridy = 11;
+        betBtn = new JButton( "Bet" );
+        betBtn.addActionListener( this );
+        betBtn.setActionCommand( "bet" );
+        gbc.gridy = 8;
         gbc.gridx = 1;
         gbc.gridwidth = 2;
+        gbLayout.setConstraints( betBtn, gbc );
+        panel.add( betBtn );
+        
+
+        
+        back = new JButton("Back");
+        back.addActionListener( this );
+        gbLayout.addLayoutComponent( back, gbc );
+        panel.add( back );
+        back.setActionCommand( "Back" );
+        gbc.gridy = 12;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbLayout.setConstraints( back, gbc );
+
+
+        msgArea = new JTextArea( 10, 30 );
+        msgArea.setLineWrap( true );
+        msgArea.setWrapStyleWord( true );
+        msgArea.setEditable( false );
+        msgArea.setBorder( new EmptyBorder( 5, 10, 5, 10 ) );
+        JScrollPane areaScrollPane = new JScrollPane( msgArea );
+        areaScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+        areaScrollPane.setBorder( new EmptyBorder( 5, 0, 5, 0 ) );
 
         Box b = Box.createHorizontalBox();
         b.add( panel );
+        b.add( areaScrollPane );
         Container c = getContentPane();
         c.add( b );
 
         int x = (int)( Math.random() * 500 );
         int y = (int)( Math.random() * 300 );
         setBounds( x, y, 500, 280 );
-
+        
+        
+        showMessage("This is a blackjack game. You will be playing against the dealer. Y"
+            + "ou will start with 1000 coins."
+            + "Enter a bet in the text box and press the 'Bet' button to start the game. "
+            + "Click 'Hit' to take another card from the deck, and 'Stay' to stop drawing.Press 'Back' to return to the home screen");
         setVisible( true );
+        
+       
     }
 
 
+    /**
+     * Displays a message in this window's text area.
+     * 
+     * @param msg
+     *            the message to be displayed.
+     */
+    public void showMessage( String msg )
+    {
+        msgArea.append( msg + "\n\n" );
+    }
+
+
+    // no line
+    public void showMessage2( String msg )
+    {
+        msgArea.append( msg );
+    }
+
+
+    /**
+     * Processes GUI events in this window.
+     * 
+     * @param e
+     *            an event.
+     */
     public void actionPerformed( ActionEvent e )
     {
-        if ( e.getActionCommand().equals( "Blackjack" ) )
+        ArrayList<Card> playerHand = blackjack.getPlayer();
+        if ( e.getActionCommand().equals( "Hit" ) )
         {
-            Blackjack b = new Blackjack();
-            BjackWindow window = new BjackWindow( b );
-            window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-            window.setBounds( 0, 0, 500, 350 );
-            window.setVisible( true );
-            dispose();
+            blackjack.hit( blackjack.getPlayer() );
+            showMessage( "You chose to Hit!" );
+            showMessage2( "Current Hand: " );
+            for ( int i = 0; i < playerHand.size(); i++ )
+            {
+                showMessage2( playerHand.get( i ).getName() + "  " );
+            }
+            showMessage("");
+            if ( blackjack.getSum( playerHand ) > 21 )
+            {
+                showMessage( "You busted! Game over. Enter a new bet to play again." );
+                bet.setEditable( true );
+
+            }
+        }
+        else if ( e.getActionCommand().equals( "Stay" ) )
+        {
+            while ( blackjack.getSum( blackjack.getDealer() ) < 16 )
+            {
+                blackjack.hit( blackjack.getDealer() );
+            }
+
+            if ( blackjack.getSum( playerHand ) > blackjack.getSum( blackjack.getDealer() ) )
+            {
+                showMessage( "You won!" );
+                blackjack.player.addMoney( Integer.parseInt( bet.getText() )* 2 );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+            }
+            else if ( blackjack.getSum( playerHand ) < blackjack.getSum( blackjack.getDealer() ) )
+            {
+                showMessage( "You lost to the dealer!" );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+                if(blackjack.player.getMoney() > 0)
+                {
+                    showMessage("Enter a new bet to play again");
+                    bet.setEditable( true );
+
+                }
+                
+                if(blackjack.player.getMoney() < 1)
+                {
+                    showMessage("You are out of money. Enter a new bet to restart the game");
+                    bet.setEditable( true );
+                    blackjack.player.setMoney( 1000 );
+                }
+
+            }
+            else
+            {
+                showMessage( "You tied with the dealer!" );
+                blackjack.player.addMoney( Integer.parseInt( bet.getText() ) );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+            }
         }
 
-        if ( e.getActionCommand().equals( "Slots" ) )
+        else if ( e.getActionCommand().equals( "bet" ) )
         {
 
-            SlotMachine s = new SlotMachine();
-            slotWindow slotWin = new slotWindow( s );
-            slotWin.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-            slotWin.setBounds( 0, 0, 500, 350 );
-            slotWin.setVisible( true );
+            if ( Integer.parseInt( bet.getText() ) < 1 )
+            {
+                showMessage( "Please enter a valid bet" );
+            }
+            else if ( blackjack.player.getMoney() < Integer.parseInt( bet.getText() ) )
+            {
+                showMessage( "Sorry, you don't have enough money for that." );
+                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+            }
+            else
+            {
+                blackjack.player.removeMoney( Integer.parseInt( bet.getText() ) );
+                showMessage( "Balance: " + ( blackjack.player.getMoney() ) );
+                bet.setEditable( false );
+                showMessage2( "Current hand: " );
+                for ( int i = 0; i < playerHand.size(); i++ )
+                {
+                    showMessage2( playerHand.get( i ).getName() + "  " );
+                }
+                showMessage("");
+
+            }
+        }
+        
+        else if ( e.getActionCommand().equals( "Back" ) )
+        {
+            casinoWindow casino = new casinoWindow();
+            casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            casino.setBounds( 0, 0, 500, 350 );
+            casino.setVisible( true );
             dispose();
         }
-
-        // if ( e.getActionCommand().equals( "Roulette" ) )
-        // {
-        // 
-        // }
-
-    }
-
-
-    public static void main( String[] args )
-    {
-        casinoWindow casino = new casinoWindow();
-        casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        casino.setBounds( 0, 0, 500, 350 );
-        casino.setVisible( true );
-
     }
 
 }
