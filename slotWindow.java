@@ -13,7 +13,7 @@ public class slotWindow extends JFrame implements ActionListener
 {
     private static final String PROMPT = ">> ";
 
-    private JButton Spin;
+    private JButton Spin, back;
 
     private JTextArea msgArea;
 
@@ -94,6 +94,16 @@ public class slotWindow extends JFrame implements ActionListener
         gbc.gridx = 1;
         gbc.gridwidth = 2;
 
+        back = new JButton("Back");
+        back.addActionListener( this );
+        gbLayout.addLayoutComponent( back, gbc );
+        panel.add( back );
+        back.setActionCommand( "Back" );
+        gbc.gridy = 12;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbLayout.setConstraints( back, gbc );
+        
         msgArea = new JTextArea( 10, 30 );
         msgArea.setLineWrap( true );
         msgArea.setWrapStyleWord( true );
@@ -114,7 +124,7 @@ public class slotWindow extends JFrame implements ActionListener
         setBounds( x, y, 500, 280 );
 
         showMessage( "This is a slot machine game. You start with 1000 coins, "
-            + "and it costs 10 coins to spin." + "Press the spin button to get started!" );
+            + "and it costs 10 coins to spin." + "Press the spin button to get started! Press 'Back' to return to the home screen" );
         setVisible( true );
 
     }
@@ -170,13 +180,23 @@ public class slotWindow extends JFrame implements ActionListener
         
                 }
        
-           }
+        
              else
              {
                  showMessage("Sorry, you are out of money. You can press 'Spin' to restart the game");
                  slot.reset();
                  
              }
+                }
+         
+         else if ( e.getActionCommand().equals( "Back" ) )
+         {
+             casinoWindow casino = new casinoWindow();
+             casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+             casino.setBounds( 0, 0, 500, 350 );
+             casino.setVisible( true );
+             dispose();
+         }
     }
 
 }
