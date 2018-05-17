@@ -1,0 +1,159 @@
+package test;
+
+import java.awt.*;
+
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+
+import java.util.ArrayList;
+
+
+public class casinoWindow extends JFrame implements ActionListener
+{
+    private JButton blackjack, bingo, slotMachine, roulette;
+    // blackjackTester test = new blackjackTester();
+
+
+    public casinoWindow()
+    {
+        super( "Frame Creator" );
+        addWindowListener( new WindowAdapter()
+        {
+            public void windowClosing( WindowEvent e )
+            {
+            }
+        } );
+
+        JPanel panel = new JPanel();
+        GridBagLayout gbLayout = new GridBagLayout();
+        panel.setLayout( gbLayout );
+        panel.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+
+        JLabel filler = new JLabel( " " );
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridwidth = 3;
+        gbLayout.setConstraints( filler, gbc );
+        panel.add( filler );
+
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+
+        filler = new JLabel( " " );
+        gbc.gridy = 6;
+        gbc.gridx = 0;
+        gbc.gridwidth = 3;
+        gbLayout.setConstraints( filler, gbc );
+        panel.add( filler );
+
+        ButtonGroup gr = new ButtonGroup();
+        blackjack = new JButton( "BlackJack" );
+        // bingo = new JButton("Bingo");
+        roulette = new JButton( "Roulette" );
+        slotMachine = new JButton( "Slot Machine" );
+
+        blackjack.addActionListener( this );
+        gr.add( blackjack );
+
+        roulette.addActionListener( this );
+        gr.add( roulette );
+
+        slotMachine.addActionListener( this );
+        gr.add( slotMachine );
+
+        gbc.gridy = 4;
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+
+        gbLayout.setConstraints( blackjack, gbc );
+        panel.add( blackjack );
+        blackjack.setActionCommand( "Blackjack" );
+        gbc.gridy = 5;
+
+        gbLayout.setConstraints( roulette, gbc );
+        panel.add( roulette );
+        roulette.setActionCommand( "Roulette" );
+        gbc.gridy = 6;
+
+        gbLayout.setConstraints( slotMachine, gbc );
+        panel.add( slotMachine );
+        slotMachine.setActionCommand( "Slots" );
+        gbc.gridy = 7;
+
+        /**
+         * gbLayout.setConstraints( bingo, gbc ); panel.add( bingo );
+         * blackjack.setActionCommand( "Bingo" ); gbc.gridy = 6;
+         */
+
+        gbc.gridy = 11;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+
+        Box b = Box.createHorizontalBox();
+        b.add( panel );
+        Container c = getContentPane();
+        c.add( b );
+
+        int x = (int)( Math.random() * 500 );
+        int y = (int)( Math.random() * 300 );
+        setBounds( x, y, 500, 280 );
+
+        setVisible( true );
+    }
+
+
+    public void actionPerformed( ActionEvent e )
+    {
+        if ( e.getActionCommand().equals( "Blackjack" ) )
+        {
+            Blackjack b = new Blackjack();
+            BjackWindow window = new BjackWindow( b );
+            window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            window.setBounds( 0, 0, 500, 350 );
+            window.setVisible( true );
+            dispose();
+        }
+
+        if ( e.getActionCommand().equals( "Slots" ) )
+        {
+
+            SlotMachine s = new SlotMachine();
+            slotWindow slotWin = new slotWindow( s );
+            slotWin.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            slotWin.setBounds( 0, 0, 500, 350 );
+            slotWin.setVisible( true );
+            dispose();
+        }
+
+        // if ( e.getActionCommand().equals( "Roulette" ) )
+        // {
+        // 
+        // }
+
+    }
+
+
+    public static void main( String[] args )
+    {
+        casinoWindow casino = new casinoWindow();
+        casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        casino.setBounds( 0, 0, 500, 350 );
+        casino.setVisible( true );
+
+    }
+
+}
