@@ -25,7 +25,7 @@ public class BjackWindow extends JFrame implements ActionListener
 
     private JButton betBtn;
 
-    private JButton hit, stay;
+    private JButton hit, stay, back;
 
     private JTextField bet;
 
@@ -35,10 +35,13 @@ public class BjackWindow extends JFrame implements ActionListener
 
 
     /**
-     * Constructs a new blackjack window
+     * Constructs a new blackjack window. Blackjack window has 4 buttons for
+     * hit, stay, bet and back (to return to home screen). It also has a
+     * textfield for the user to enter the bet and a message area for the game
+     * to be displayed in
      * 
      * @param blackjack
-     *            blackjack class controls functionality
+     *            blackjack class controls functionality behind buttons
      */
     public BjackWindow( Blackjack bj )
     {
@@ -107,6 +110,9 @@ public class BjackWindow extends JFrame implements ActionListener
         gr.add( hit );
         gr.add( stay );
 
+        hit.setEnabled( false );
+        stay.setEnabled( false );
+
         gbc.gridy = 4;
         gbc.gridx = 1;
         gbc.gridwidth = 1;
@@ -121,14 +127,24 @@ public class BjackWindow extends JFrame implements ActionListener
         stay.setActionCommand( "Stay" );
         gbc.gridy = 6;
 
-        betBtn = new JButton( "BET" );
+        betBtn = new JButton( "Bet" );
         betBtn.addActionListener( this );
         betBtn.setActionCommand( "bet" );
-        gbc.gridy = 11;
+        gbc.gridy = 8;
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         gbLayout.setConstraints( betBtn, gbc );
         panel.add( betBtn );
+
+        back = new JButton( "Back" );
+        back.addActionListener( this );
+        gbLayout.addLayoutComponent( back, gbc );
+        panel.add( back );
+        back.setActionCommand( "Back" );
+        gbc.gridy = 12;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbLayout.setConstraints( back, gbc );
 
         msgArea = new JTextArea( 10, 30 );
         msgArea.setLineWrap( true );
@@ -148,14 +164,15 @@ public class BjackWindow extends JFrame implements ActionListener
         int x = (int)( Math.random() * 500 );
         int y = (int)( Math.random() * 300 );
         setBounds( x, y, 500, 280 );
-        
-        
-        showMessage("This is a blackjack game. You will be playing against the dealer. "
-            + "Enter a bet in the text box and press the 'BET' button to start the game. "
-            + "Click 'Hit' to take another card from the deck, and 'Stay' to stop drawing.");
+
+        showMessage( "This is a blackjack game. You will be playing against the dealer. Y"
+            + "ou will start with 1000 coins."
+            + "Enter a bet in the text box and press the 'Bet' button to start the game. "
+            + "Click 'Hit' to take another card from the deck, and 'Stay' to stop drawing.Press 'Back' to return to the home screen" );
+        showMessage("");
+        showMessage( "Balance: " + blackjack.player.getMoney() );
         setVisible( true );
-        
-       
+
     }
 
 
@@ -172,6 +189,14 @@ public class BjackWindow extends JFrame implements ActionListener
 
 
     // no line
+
+    /**
+     * Displays a message in this window's text area but without creating a new
+     * line.
+     * 
+     * @param msg
+     *            the message to be displayed.
+     */
     public void showMessage2( String msg )
     {
         msgArea.append( msg );
@@ -179,7 +204,8 @@ public class BjackWindow extends JFrame implements ActionListener
 
 
     /**
-     * Processes GUI events in this window.
+     * Processes GUI events in this window. Handles all the button clicks and displays results 
+     * in text area. Disables and enables GUI features as necessary
      * 
      * @param e
      *            an event.
@@ -187,6 +213,7 @@ public class BjackWindow extends JFrame implements ActionListener
     public void actionPerformed( ActionEvent e )
     {
         ArrayList<Card> playerHand = blackjack.getPlayer();
+       
         if ( e.getActionCommand().equals( "Hit" ) )
         {
             blackjack.hit( blackjack.getPlayer() );
@@ -197,42 +224,122 @@ public class BjackWindow extends JFrame implements ActionListener
                 showMessage2( playerHand.get( i ).getName() + "  " );
             }
             showMessage("");
+            
+            //check if it was an ace that caused the bust
+            if ( blackjack.getSum( blackjack.getPlayer() ) > 21 )
+            { 
+                int i = 0;
+                while( blackjack.getSum( blackjack.getPlayer()) > 21 && i < blackjack.getPlayer().size())
+                {
+
+    
+                        if(blackjack.getPlayer().get(i).getName() == "Ace")
+                        {
+                            blackjack.getPlayer().get( i ).setAce( 1 );
+         
+                        }
+    
+                    i++;
+                }
+            }
             if ( blackjack.getSum( playerHand ) > 21 )
             {
                 showMessage( "You busted! Game over. Enter a new bet to play again." );
+                bet.setText( "" );
+              
+                hit.setEnabled( false );
+                stay.setEnabled( false );
                 bet.setEditable( true );
-
+                betBtn.setEnabled(true);
             }
+
         }
         else if ( e.getActionCommand().equals( "Stay" ) )
         {
-            while ( blackjack.getSum( blackjack.getDealer() ) < 16 )
+            while ( blackjack.getSum( blackjack.getDealer() ) <= 16 )
             {
                 blackjack.hit( blackjack.getDealer() );
-            }
 
-            if ( blackjack.getSum( playerHand ) > blackjack.getSum( blackjack.getDealer() ) )
+            }
+            if ( blackjack.getSum( blackjack.getDealer()) > 21 )
+            { 
+                int i = 0;
+                while( blackjack.getSum( blackjack.getDealer()) > 21 && i < blackjack.getDealer().size())
+                {
+
+    
+                        if(blackjack.getDealer().get(i).getName() == "Ace")
+                        {
+                            blackjack.getDealer().get( i ).setAce( 1 );
+         
+                        }
+    
+                    i++;
+                }
+            }
+            //Hit again in case sum changed
+            while ( blackjack.getSum( blackjack.getDealer() ) <= 16 )
+            {
+                blackjack.hit( blackjack.getDealer() );
+
+            }
+            
+            if(blackjack.getSum( blackjack.getDealer()) > 21)
+            {
+               blackjack.player.addMoney( Integer.parseInt( bet.getText() )* 2 );
+               showMessage2( "Dealer's hand: " );
+              
+               for ( int i = 0; i < blackjack.getDealer().size(); i++ )
+               {
+                   showMessage2( blackjack.getDealer().get( i ).getName() + "  " );
+               }
+               showMessage("");
+               showMessage("The dealer busted. You won! ");
+
+               showMessage( "Balance: " + blackjack.player.getMoney() );
+               bet.setText( "" );
+
+            }
+            
+            else if ( blackjack.getSum( playerHand ) > blackjack.getSum( blackjack.getDealer() ) )
             {
                 showMessage( "You won!" );
                 blackjack.player.addMoney( Integer.parseInt( bet.getText() )* 2 );
-                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+                showMessage2( "Dealer's hand: " );
+               
+                for ( int i = 0; i < blackjack.getDealer().size(); i++ )
+                {
+                    showMessage2( blackjack.getDealer().get( i ).getName() + "  " );
+                }
+                showMessage("");
+                showMessage2( "Balance: " + blackjack.player.getMoney() );
+
+
             }
             else if ( blackjack.getSum( playerHand ) < blackjack.getSum( blackjack.getDealer() ) )
             {
-                showMessage( "You lost to the dealer!" );
-                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+                showMessage( "You lost to the dealer! " );
+                showMessage2( "Dealer's hand: " );
+                for ( int i = 0; i < blackjack.getDealer().size(); i++ )
+                {
+                    showMessage2( blackjack.getDealer().get( i ).getName() + "  " );
+                }
+                showMessage("");
+                showMessage( "Balance: " + blackjack.player.getMoney() );
+
                 if(blackjack.player.getMoney() > 0)
                 {
                     showMessage("Enter a new bet to play again");
-                    bet.setEditable( true );
+                    bet.setText( "" );
+
 
                 }
                 
                 if(blackjack.player.getMoney() < 1)
                 {
                     showMessage("You are out of money. Enter a new bet to restart the game");
-                    bet.setEditable( true );
                     blackjack.player.setMoney( 1000 );
+
                 }
 
             }
@@ -240,16 +347,33 @@ public class BjackWindow extends JFrame implements ActionListener
             {
                 showMessage( "You tied with the dealer!" );
                 blackjack.player.addMoney( Integer.parseInt( bet.getText() ) );
+                showMessage2( "Dealer's hand: " );
+                for ( int i = 0; i < blackjack.getDealer().size(); i++ )
+                {
+                    showMessage2( blackjack.getDealer().get( i ).getName() + "  " );
+                }
+                showMessage("");
                 showMessage( "Your current balance is " + blackjack.player.getMoney() );
+                showMessage( "Enter a new bet to play again" );
+                bet.setText( "" );
+
+
+
             }
+            hit.setEnabled( false );
+            stay.setEnabled( false );
+            betBtn.setEnabled( true );
+            bet.setEditable(true);
         }
 
         else if ( e.getActionCommand().equals( "bet" ) )
         {
 
-            if ( Integer.parseInt( bet.getText() ) < 1 )
+            msgArea.setText( "" );
+            try {
+            if(Integer.parseInt( bet.getText() ) < 1)
             {
-                showMessage( "Please enter a valid bet" );
+                showMessage("Please enter a valid bet");
             }
             else if ( blackjack.player.getMoney() < Integer.parseInt( bet.getText() ) )
             {
@@ -258,6 +382,8 @@ public class BjackWindow extends JFrame implements ActionListener
             }
             else
             {
+                blackjack.clearHands();
+                blackjack.setHand();
                 blackjack.player.removeMoney( Integer.parseInt( bet.getText() ) );
                 showMessage( "Balance: " + ( blackjack.player.getMoney() ) );
                 bet.setEditable( false );
@@ -269,6 +395,27 @@ public class BjackWindow extends JFrame implements ActionListener
                 showMessage("");
 
             }
+            hit.setEnabled( true );
+            stay.setEnabled( true );
+            betBtn.setEnabled( false );
+            }
+            catch( Exception ex)
+            {  
+            
+            showMessage( "Please enter a valid bet" );
+            hit.setEnabled( false );
+            stay.setEnabled( false );
+            }
+
+        }
+        
+        else if ( e.getActionCommand().equals( "Back" ) )
+        {
+            casinoWindow casino = new casinoWindow();
+            casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            casino.setBounds( 0, 0, 500, 350 );
+            casino.setVisible( true );
+            dispose();
         }
     }
 
