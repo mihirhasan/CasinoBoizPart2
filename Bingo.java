@@ -1,102 +1,126 @@
+import java.util.Random;
+
+
 public class Bingo
 {
-int[][] board;
+    public int[][] board;
 
-public Bingo()
-{
-  board = new int[5][5];
-}
-  
-public void drawBoard()
-{
-  for (int col = 1; col <= 5; col++)
-  {
-    for (int row = 0; row < 5; row++)
+    Random rand;
+
+
+    public Bingo()
     {
-      board[row][col -1] = (int)Math.random() * 20 * col;
+        board = new int[5][5];
+        rand = new Random();
     }
-  }
-  board[2][2] = 0;
-}
-  
-  public boolean increment()
-  {
-    int rand = (int)Math.random() *100;
-    for (int col = 1; col <= 5; col++)
-     {
-    for (int row = 0; row < 5; row++)
+
+
+    public void drawBoard()
     {
-      if( board[row][col-1] == rand)
-      {
-        board[row][col-1] = 0;
-      }
-    }
-  }
-    
-    
-    int check 0;
-    for( int row = 0; row < 5; row ++)
-    {
-      for (int col = 0; col < 5; col ++)
-      {
-        if( board[row][col] = 0)
+        for ( int row = 0; row < 5; row++ )
         {
-          check++
+            for ( int col = 1; col <= 5; col++ )
+            {
+                board[row][col - 1] = rand.nextInt(  20  ) + 20*row;
+            }
         }
-        if ( check == 5)
-        {
-          return true
-        }
-      }
-      check =0;
+        board[2][2] = 0;
     }
-    
-    for (int col = 0; col < 5; col ++)
+
+
+    public int increment()
     {
-      for (int row = 0; row < 5; row++)
-      {
-        if( board[row][col] == 0)
-        {
-          check++
-        }
-        if ( check == 5)
-        {
-          return true
-        }
-      }
-      check =0;
+        
+            int random = (rand.nextInt(100)) + 1;
+            for ( int col = 1; col <= 5; col++ )
+            {
+                for ( int row = 0; row < 5; row++ )
+                {
+                    if ( board[row][col - 1] == random )
+                    {
+                        board[row][col - 1] = 0;
+                    }
+                }
+            }
+            return random;
     }
-    
-    check = 0;
-    for (int both = 0; both < 5; both++)
+
+
+    public boolean check()
     {
-      if ( board[both][both] == 0)
-      {
-        check++;
-      }
-      if(check == 5)
-      {
-        return true;
-      }
+        int check = 0;
+        for ( int row = 0; row < 5; row++ )
+        {
+            for ( int col = 0; col < 5; col++ )
+            {
+                if ( board[row][col] == 0 )
+                {
+                    check++;
+                }
+                if ( check == 5 )
+                {
+                    return true;
+                }
+            }
+            check = 0;
+        }
+
+        for ( int col = 0; col < 5; col++ )
+        {
+            for ( int row = 0; row < 5; row++ )
+            {
+                if ( board[row][col] == 0 )
+                {
+                    check++;
+                }
+                if ( check == 5 )
+                {
+                    return true;
+                }
+            }
+            check = 0;
+        }
+
+        check = 0;
+        for ( int both = 0; both < 5; both++ )
+        {
+            if ( board[both][both] == 0 )
+            {
+                check++;
+            }
+            if ( check == 5 )
+            {
+                return true;
+            }
+        }
+
+        check = 0;
+        int down = 4;
+        for ( int other = 0; other < 5; other++ )
+        {
+            if ( board[down][other] == 0 )
+            {
+                check++;
+            }
+            if ( check == 5 )
+            {
+                return true;
+            }
+            down--;
+        }
+
+        return false;
     }
-    
-    check = 0;
-    int down = 4;
-    for (int other = 0; other < 5; other++)
+
+
+    public int[][] myBoard()
     {
-      if(board[down][other] == 0)
-      {
-        check++;
-      }
-      if (check == 5)
-      {
-        return true;
-      }
-      down--;
+        return board;
     }
     
-    
-  }
-  
-  
+    public Random getRand()
+    {
+        return rand;
+    }
+
 }
