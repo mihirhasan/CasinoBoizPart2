@@ -1,5 +1,0 @@
-        Blackjack b = new Blackjack();
-        BjackWindow window = new BjackWindow( b );
-        window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-       window.setBounds( 0, 0, 500, 350 );
-       window.setVisible( true );
