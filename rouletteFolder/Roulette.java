@@ -1,20 +1,40 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 
+/**
+ *  This is the Roulette class that is part of the CasiYes project. 
+ *  This class is uses a hashmap to store the board. 
+ *
+ *  @author  Dave Desouza-Lawrence
+ *  @version May 16, 2018
+ *  @author  Period: 2
+ *  @author  Assignment: CasiYES
+ *  @author  Sources: Mihir
+ */
 public class Roulette
 {
     private HashMap<Integer, Integer> board;
 
-    private int betType;
+    private int betType = 0;
 
-    private int betAmount;
+    private int betAmount = 0;
 
-    private int betSquare;
+    private int betSquare = 0;
     
-    private int money;
+    private int money = 0;
+    
+    private Random rand;
+    
+    private int testingVariable = -1;
 
 
+    /**
+     * The default no args constructor creates a new roulette object
+     * it also creates the board, because the squares are colored in a 
+     * random-like fashion.
+     */
     public Roulette()
     {
         board = new HashMap<Integer, Integer>();
@@ -58,6 +78,61 @@ public class Roulette
         board.put( 36, 1 );
         
         money = 1000;
+        
+        rand = new Random();
+    }
+    
+    /**
+     * This constructor is only used for testing.
+     * @param ran The testing number that is used in the test.
+     */
+    public Roulette( int ran )
+    {
+        board = new HashMap<Integer, Integer>();
+
+        board.put( 0, 0 );
+        board.put( 1, 1 );
+        board.put( 2, 2 );
+        board.put( 3, 1 );
+        board.put( 4, 2 );
+        board.put( 5, 1 );
+        board.put( 6, 2 );
+        board.put( 7, 1 );
+        board.put( 8, 2 );
+        board.put( 9, 1 );
+        board.put( 10, 2 );
+        board.put( 11, 2 );
+        board.put( 12, 1 );
+        board.put( 13, 2 );
+        board.put( 14, 1 );
+        board.put( 15, 2 );
+        board.put( 16, 1 );
+        board.put( 17, 2 );
+        board.put( 18, 1 );
+        board.put( 19, 1 );
+        board.put( 20, 2 );
+        board.put( 21, 1 );
+        board.put( 22, 2 );
+        board.put( 23, 1 );
+        board.put( 24, 2 );
+        board.put( 25, 1 );
+        board.put( 26, 2 );
+        board.put( 27, 1 );
+        board.put( 28, 2 );
+        board.put( 29, 2 );
+        board.put( 30, 1 );
+        board.put( 31, 2 );
+        board.put( 32, 1 );
+        board.put( 33, 2 );
+        board.put( 34, 1 );
+        board.put( 35, 2 );
+        board.put( 36, 1 );
+        
+        money = 1000;
+        
+        rand = new Random();
+        testingVariable = ran;
+        
     }
 
 
@@ -80,16 +155,21 @@ public class Roulette
      * @return the amount that should be paid or 0, and if they don't have
      *         enough money, or it is under the minimum it will return -1.
      */
-    public int bet( )
+    public int bet()
     {
-        //betAmount = betA;
-        //betType = betT;
-        //betSquare = betS;
 
         if ( betAmount >= 5  && betAmount <= money )
         {
             money = money - betAmount;
-            int roll = (int)( Math.random() * 36 ) + 1;
+            int roll;
+            if( testingVariable == -1)
+            {
+                roll = ( rand.nextInt() ) + 1;
+            }
+            else
+            {
+                roll = testingVariable;
+            }
             if ( betType == 1 && roll == betSquare )
             {
                 money += betAmount * 36;
@@ -135,21 +215,77 @@ public class Roulette
         return 0;
     }
     
+    /**
+     * Sets the Bet amount
+     * @param o the amount of the bet
+     */
     public void setBetAmount( int o)
     {
         betAmount = o;
     }
+    
+    /**
+     * Set the bet type
+     * @param o the bet type
+     */
     public void setBetType( int o)
     {
         betType = o;
     }
+    
+    /**
+     * Sets the square you want to bet on.
+     * @param o the square that you want to bet, but if the user changes the bet type the bet square needs to be changed accordingly. 
+     */
     public void setBetSquare( int o)
     {
         betSquare = o;
     }
+    
+    /**
+     * gets the Bet amount
+     * @return the amount of money
+     */
+    public int getBetAmount()
+    {
+        return betAmount;
+    }
+    
+    /**
+     * Gets the bet type.
+     * @return the type of bet
+     */
+    public int getBetType()
+    {
+        return betType;
+    }
+    
+    /**
+     * Gets the square that bet on.
+     * @return the square the bet  
+     */
+    public int getBetSquare()
+    {
+        return betSquare;
+    }
+    
+    /**
+     * Returns the money that you currently have.
+     * @return money the money that you have 
+     */
     public int getMoney()
     {
         return money;
     }
+    
+    /** 
+     * Returns the HashMao for testing purposes
+     * @return board the board that is used in this class
+     */
+    public HashMap<Integer, Integer> getBoard()
+    {
+        return board;
+    }
 
+    
 }
