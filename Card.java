@@ -16,6 +16,7 @@ public class Card
 
     public int getVal()
     {
+     
         return value;
     }
 
