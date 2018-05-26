@@ -9,7 +9,7 @@ import javax.swing.border.*;
 
 
 /**
- * Provides GUI for a Roulette game.
+ * Provides GUI for a trader.
  */
 public class RouletteWindow extends JFrame implements ActionListener
 {
@@ -29,8 +29,8 @@ public class RouletteWindow extends JFrame implements ActionListener
     /**
      * Constructs a new trading window for a trader.
      * 
-     * @param trader
-     *            a trader that will own this window.
+     * @param roulette
+     *            a roulette game that is played in the
      */
     public RouletteWindow( Roulette roulette )
     {
@@ -206,32 +206,32 @@ public class RouletteWindow extends JFrame implements ActionListener
         if ( e.getActionCommand().equals( "numBet" ) )
         {
             roulette.setBetType( 1 );
-            showMessage( "you bet a number" );
+            showMessage( "You bet a number" );
         }
         else if ( e.getActionCommand().equals( "colBet" ) )
         {
             roulette.setBetType( 2 );
-            showMessage( "you bet a column" );
+            showMessage( "You bet a column" );
         }
         else if ( e.getActionCommand().equals( "colorBet" ) )
         {
             roulette.setBetType( 3 );
-            showMessage( "you bet a Color" );
+            showMessage( "You bet a Color" );
         }
         else if ( e.getActionCommand().equals( "evenBet" ) )
         {
             roulette.setBetType( 4 );
-            showMessage( "you bet even or odd" );
+            showMessage( "You bet even or odd" );
         }
         else if ( e.getActionCommand().equals( "firstNumBet" ) )
         {
             roulette.setBetType( 5 );
-            showMessage( "you bet a number from 1 to 18" );
+            showMessage( "You bet a number from 1 to 18" );
         }
         else if ( e.getActionCommand().equals( "secondNumBet" ) )
         {
             roulette.setBetType( 6 );
-            showMessage( "you bet a number form 19 to 36" );
+            showMessage( "You bet a number form 19 to 36" );
         }
         else if ( e.getActionCommand().equals( "bet" ) )
         {
@@ -249,6 +249,10 @@ public class RouletteWindow extends JFrame implements ActionListener
                     showMessage(
                         "You did not bet more than $5 or you don't have that much money" );
                 }
+                else if (hold == -2)
+                {
+                    showMessage("You did not enter a proper bet. Please complete all the ");
+                }
                 else
                 {
                     showMessage( "You won: " + hold );
@@ -257,12 +261,8 @@ public class RouletteWindow extends JFrame implements ActionListener
             }
             catch ( NumberFormatException ex )
             {
-                showMessage( "you done messed up" );
+                showMessage( "Please enter an integer." );
             }
-        }
-        else
-        {
-            showMessage( "Error Dumbass!" );
         }
     }
 }
