@@ -21,10 +21,11 @@ public class slotWindow extends JFrame implements ActionListener
 
 
     /**
-     * Constructs a new blackjack window
+     * Constructs a new slot machine window with buttons to spin and return to main window.
+     * msg area displays results of spins
      * 
-     * @param blackjack
-     *            blackjack class controls functionality
+     * @param slot machine
+     *            slot machine class controls functionality behind gui features
      */
     public slotWindow( SlotMachine slotmachine )
     {
@@ -123,8 +124,8 @@ public class slotWindow extends JFrame implements ActionListener
         int y = (int)( Math.random() * 300 );
         setBounds( x, y, 500, 280 );
 
-        showMessage( "This is a slot machine game. You start with 1000 coins, "
-            + "and it costs 10 coins to spin." + "Press the spin button to get started! Press 'Back' to return to the home screen" );
+        showMessage( "This is a slot machine game. You start with 100 coins, "
+            + "and it costs 10 coins to spin." + " Press the spin button to get started! Press 'Back' to return to the home screen." );
         setVisible( true );
 
     }
@@ -143,6 +144,12 @@ public class slotWindow extends JFrame implements ActionListener
 
 
     // no line
+    /**
+     * Displays a message in this window's text area but without the new line.
+     * 
+     * @param msg
+     *            the message to be displayed.
+     */
     public void showMessage2( String msg )
     {
         msgArea.append( msg );
@@ -150,7 +157,8 @@ public class slotWindow extends JFrame implements ActionListener
 
 
     /**
-     * Processes GUI events in this window.
+     * Processes GUI events in this window. Handles spin button click by displaying icons 
+     * and results in msg area. Handles back button click by returning to main window.
      * 
      * @param e
      *            an event.
@@ -161,19 +169,20 @@ public class slotWindow extends JFrame implements ActionListener
                 {
              if(slot.getTotal() > 9)
              {
+                     msgArea.setText( "" );
                     slot.spin();
                    showMessage( slot.getResult()[0] + " || " + slot.getResult()[1] + " || " + slot.getResult()[2] );
                     if ( slot.getPay() > 0 )
                     {
                         showMessage( "Congratulations! You made " + slot.getPay() + " coins!" );
                         showMessage( "Current Balance:" + slot.getTotal() + "" );
-
+                        
                         
                     }
                     else
                     {
-                       showMessage( "Sorry, you Lose" );
-                       showMessage( "Current Balance:" + slot.getTotal() + "" );
+                       showMessage( "Sorry, better luck next time!" );
+                       showMessage( "Balance: " + slot.getTotal() + "" );
 
                     }
                     showMessage("Press spin to play again!");
