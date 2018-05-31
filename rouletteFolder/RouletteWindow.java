@@ -15,7 +15,7 @@ public class RouletteWindow extends JFrame implements ActionListener
 {
     private static final String PROMPT = ">> ";
 
-    private JButton betBtn;
+    private JButton betBtn, backBtn;
 
     private JRadioButton btn1, btn2, btn3, btn4, btn5, btn6;
 
@@ -158,6 +158,15 @@ public class RouletteWindow extends JFrame implements ActionListener
         gbc.gridwidth = 2;
         gbLayout.setConstraints( betBtn, gbc );
         panel.add( betBtn );
+        
+        backBtn = new JButton( "Back to Menu" );
+        backBtn.addActionListener( this );
+        backBtn.setActionCommand( "back" );
+        gbc.gridy = 12;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbLayout.setConstraints( backBtn, gbc );
+        panel.add( backBtn );
 
         msgArea = new JTextArea( 10, 30 );
         msgArea.setLineWrap( true );
@@ -202,36 +211,49 @@ public class RouletteWindow extends JFrame implements ActionListener
      */
     public void actionPerformed( ActionEvent e )
     {
-
+        nsText.setEditable( true );
+        nsText.setBackground( Color.CYAN);
         if ( e.getActionCommand().equals( "numBet" ) )
         {
             roulette.setBetType( 1 );
-            showMessage( "You bet a number" );
+            showMessage(
+                "In the section labeled bet square please select which square you would like to bet on." );
         }
         else if ( e.getActionCommand().equals( "colBet" ) )
         {
             roulette.setBetType( 2 );
-            showMessage( "You bet a column" );
+            showMessage(
+                "In the section labeled bet square please select which column you want to bet on." );
         }
         else if ( e.getActionCommand().equals( "colorBet" ) )
         {
             roulette.setBetType( 3 );
-            showMessage( "You bet a Color" );
+            showMessage(
+                "In the section labeled bet square type 1 for red and 2 for black" );
         }
         else if ( e.getActionCommand().equals( "evenBet" ) )
         {
             roulette.setBetType( 4 );
-            showMessage( "You bet even or odd" );
+            showMessage(
+                "In the section labeled bet square type 0 for even and 1 for odd" );
         }
         else if ( e.getActionCommand().equals( "firstNumBet" ) )
         {
             roulette.setBetType( 5 );
-            showMessage( "You bet a number from 1 to 18" );
+            roulette.setBetSquare( 18 );
+            nsText.setText( "18" );
+            showMessage( "Your chose the bet in the range from 1 to 18." );
+            nsText.setBackground( Color.GRAY);
+            nsText.setEditable( false );
         }
         else if ( e.getActionCommand().equals( "secondNumBet" ) )
         {
             roulette.setBetType( 6 );
-            showMessage( "You bet a number form 19 to 36" );
+            roulette.setBetSquare( 36 );
+            nsText.setText( "36" );
+            showMessage( "Your chose the bet in the range from 19 to 36." );
+            nsText.setBackground( Color.GRAY);
+            nsText.setEditable( false );
         }
         else if ( e.getActionCommand().equals( "bet" ) )
         {
@@ -240,18 +262,17 @@ public class RouletteWindow extends JFrame implements ActionListener
                 roulette.setBetAmount( Integer.parseInt( symbText.getText() ) );
                 roulette.setBetSquare( Integer.parseInt( nsText.getText() ) );
                 showMessage(
-                    "You betted: " + Integer.parseInt( symbText.getText() ) );
-                showMessage(
-                    "You betted on: " + Integer.parseInt( nsText.getText() ) );
+                    "You bet: " + Integer.parseInt( symbText.getText() ) );
                 int hold = roulette.bet();
                 if ( hold == -1 )
                 {
                     showMessage(
                         "You did not bet more than $5 or you don't have that much money" );
                 }
-                else if (hold == -2)
+                else if ( hold == -2 )
                 {
-                    showMessage("You did not enter a proper bet. Please complete all the ");
+                    showMessage(
+                        "You did not enter a proper bet. Please complete all the " );
                 }
                 else
                 {
@@ -263,6 +284,14 @@ public class RouletteWindow extends JFrame implements ActionListener
             {
                 showMessage( "Please enter an integer." );
             }
+        }
+        else if ( e.getActionCommand().equals( "back" ))
+        {
+            CasinoWindow casino = new CasinoWindow();
+            casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            casino.setBounds( 0, 0, 500, 350 );
+            casino.setVisible( true );
+            dispose();
         }
     }
 }
