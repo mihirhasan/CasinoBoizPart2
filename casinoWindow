@@ -1,7 +1,6 @@
 package test;
 
 import java.awt.*;
-
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -11,10 +10,12 @@ import java.util.ArrayList;
 
 public class casinoWindow extends JFrame implements ActionListener
 {
-    private JButton blackjack, bingo, slotMachine, roulette;
-    // blackjackTester test = new blackjackTester();
+    private JButton blackjack, bingo, slotMachine, roulette;    // blackjackTester test = new blackjackTester();
 
-
+/**
+ * creates the "main" home screen. Contains four buttons. Each button when clicked will 
+ * open the window of the game it is associated with.
+ */
     public casinoWindow()
     {
         super( "Casino" );
@@ -29,7 +30,7 @@ public class casinoWindow extends JFrame implements ActionListener
         GridBagLayout gbLayout = new GridBagLayout();
         panel.setLayout( gbLayout );
         panel.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
-
+        panel.setBackground( Color.black );
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
@@ -59,20 +60,32 @@ public class casinoWindow extends JFrame implements ActionListener
         gbc.gridwidth = 3;
         gbLayout.setConstraints( filler, gbc );
         panel.add( filler );
+        
+        JLabel title = new JLabel("CasiYES", JLabel.CENTER);
+        title.setForeground(Color.YELLOW);
+        title.setFont( (new Font("Impact", Font.BOLD, 35)) );
+       
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridwidth = 10;
+        gbc.gridwidth = 25;
+        gbLayout.setConstraints( title, gbc );
+        panel.add(title);
 
         ButtonGroup gr = new ButtonGroup();
-        blackjack = new JButton( "BlackJack" );
-        // bingo = new JButton("Bingo");
+        blackjack = new JButton( "BlackJack");
+        bingo = new JButton("Bingo");
         roulette = new JButton( "Roulette" );
         slotMachine = new JButton( "Slot Machine" );
-
+        
         blackjack.addActionListener( this );
         gr.add( blackjack );
 
         roulette.addActionListener( this );
         gr.add( roulette );
-
+        bingo.addActionListener( this );
         slotMachine.addActionListener( this );
+        slotMachine.setAlignmentX(Component.RIGHT_ALIGNMENT);
         gr.add( slotMachine );
 
         gbc.gridy = 4;
@@ -94,10 +107,12 @@ public class casinoWindow extends JFrame implements ActionListener
         slotMachine.setActionCommand( "Slots" );
         gbc.gridy = 7;
 
-        /**
-         * gbLayout.setConstraints( bingo, gbc ); panel.add( bingo );
-         * blackjack.setActionCommand( "Bingo" ); gbc.gridy = 6;
-         */
+        
+         gbLayout.setConstraints( bingo, gbc ); 
+         panel.add( bingo );
+         bingo.setActionCommand( "Bingo" );
+         gbc.gridy = 8;
+        
 
         gbc.gridy = 11;
         gbc.gridx = 1;
@@ -115,7 +130,9 @@ public class casinoWindow extends JFrame implements ActionListener
         setVisible( true );
     }
 
-
+/**
+ * Handles GUI events. Creates game window for each button when they are clicked.
+ */
     public void actionPerformed( ActionEvent e )
     {
         if ( e.getActionCommand().equals( "Blackjack" ) )
@@ -123,7 +140,7 @@ public class casinoWindow extends JFrame implements ActionListener
             Blackjack b = new Blackjack();
             BjackWindow window = new BjackWindow( b );
             window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-            window.setBounds( 0, 0, 500, 350 );
+            window.setBounds( 0, 0, 500, 430 );
             window.setVisible( true );
             dispose();
         }
@@ -134,24 +151,42 @@ public class casinoWindow extends JFrame implements ActionListener
             SlotMachine s = new SlotMachine();
             slotWindow slotWin = new slotWindow( s );
             slotWin.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-            slotWin.setBounds( 0, 0, 500, 350 );
+            slotWin.setBounds( 0, 0, 500, 430 );
             slotWin.setVisible( true );
             dispose();
         }
 
-        // if ( e.getActionCommand().equals( "Roulette" ) )
-        // {
-        // 
-        // }
-
+        if ( e.getActionCommand().equals( "Roulette" ) )
+         {
+            Roulette r = new Roulette();
+            RouletteWindow window = new RouletteWindow( r );
+            window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            window.setBounds( 0, 0, 500, 430 );
+            window.setVisible( true );
+            dispose();
+         }
+        if ( e.getActionCommand().equals( "Bingo" ) )
+        {
+           Bingo b = new Bingo();
+           BingoWindow bingWin = new BingoWindow( b );
+           bingWin.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+           bingWin.setBounds( 0, 0, 600, 430 );
+           bingWin.setVisible( true );
+           dispose();
+        }
     }
 
-
+/**
+ * 
+ * driver class builds the main casino. The casino window can then open all the 
+ * other windows
+ * @param args main args 
+ */
     public static void main( String[] args )
     {
         casinoWindow casino = new casinoWindow();
         casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        casino.setBounds( 0, 0, 500, 350 );
+        casino.setBounds( 0, 0, 500, 430 );
         casino.setVisible( true );
 
     }
