@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -15,7 +17,7 @@ public class RouletteWindow extends JFrame implements ActionListener
 {
     private static final String PROMPT = ">> ";
 
-    private JButton betBtn, backBtn;
+    private JButton betBtn, backBtn, clearBtn;
 
     private JRadioButton btn1, btn2, btn3, btn4, btn5, btn6;
 
@@ -158,11 +160,20 @@ public class RouletteWindow extends JFrame implements ActionListener
         gbc.gridwidth = 2;
         gbLayout.setConstraints( betBtn, gbc );
         panel.add( betBtn );
-        
+
+        clearBtn = new JButton( "Clear Text" );
+        clearBtn.addActionListener( this );
+        clearBtn.setActionCommand( "clear" );
+        gbc.gridy = 12;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbLayout.setConstraints( clearBtn, gbc );
+        panel.add( clearBtn );
+
         backBtn = new JButton( "Back to Menu" );
         backBtn.addActionListener( this );
         backBtn.setActionCommand( "back" );
-        gbc.gridy = 12;
+        gbc.gridy = 13;
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         gbLayout.setConstraints( backBtn, gbc );
@@ -212,86 +223,119 @@ public class RouletteWindow extends JFrame implements ActionListener
     public void actionPerformed( ActionEvent e )
     {
         nsText.setEditable( true );
-        nsText.setBackground( Color.CYAN);
-        if ( e.getActionCommand().equals( "numBet" ) )
+        nsText.setBackground( Color.CYAN );
+        if ( roulette.getMoney() >= 5 )
         {
-            roulette.setBetType( 1 );
-            showMessage(
-                "In the section labeled bet square please select which square you would like to bet on." );
-        }
-        else if ( e.getActionCommand().equals( "colBet" ) )
-        {
-            roulette.setBetType( 2 );
-            showMessage(
-                "In the section labeled bet square please select which column you want to bet on." );
-        }
-        else if ( e.getActionCommand().equals( "colorBet" ) )
-        {
-            roulette.setBetType( 3 );
-            showMessage(
-                "In the section labeled bet square type 1 for red and 2 for black" );
-        }
-        else if ( e.getActionCommand().equals( "evenBet" ) )
-        {
-            roulette.setBetType( 4 );
-            showMessage(
-                "In the section labeled bet square type 0 for even and 1 for odd" );
-        }
-        else if ( e.getActionCommand().equals( "firstNumBet" ) )
-        {
-            roulette.setBetType( 5 );
-            roulette.setBetSquare( 18 );
-            nsText.setText( "18" );
-            showMessage( "Your chose the bet in the range from 1 to 18." );
-            nsText.setBackground( Color.GRAY);
-            nsText.setEditable( false );
-        }
-        else if ( e.getActionCommand().equals( "secondNumBet" ) )
-        {
-            roulette.setBetType( 6 );
-            roulette.setBetSquare( 36 );
-            nsText.setText( "36" );
-            showMessage( "Your chose the bet in the range from 19 to 36." );
-            nsText.setBackground( Color.GRAY);
-            nsText.setEditable( false );
-        }
-        else if ( e.getActionCommand().equals( "bet" ) )
-        {
-            try
+            if ( e.getActionCommand().equals( "numBet" ) )
             {
-                roulette.setBetAmount( Integer.parseInt( symbText.getText() ) );
-                roulette.setBetSquare( Integer.parseInt( nsText.getText() ) );
+                roulette.setBetType( 1 );
                 showMessage(
-                    "You bet: " + Integer.parseInt( symbText.getText() ) );
-                int hold = roulette.bet();
-                if ( hold == -1 )
-                {
-                    showMessage(
-                        "You did not bet more than $5 or you don't have that much money" );
-                }
-                else if ( hold == -2 )
-                {
-                    showMessage(
-                        "You did not enter a proper bet. Please complete all the " );
-                }
-                else
-                {
-                    showMessage( "You won: " + hold );
-                }
-                showMessage( "You have: " + roulette.getMoney() );
+                    "In the section labeled bet square please select which square you would like to bet on." );
             }
-            catch ( NumberFormatException ex )
+            else if ( e.getActionCommand().equals( "colBet" ) )
             {
-                showMessage( "Please enter an integer." );
+                roulette.setBetType( 2 );
+                showMessage(
+                    "In the section labeled bet square please select which column you want to bet on." );
+            }
+            else if ( e.getActionCommand().equals( "colorBet" ) )
+            {
+                roulette.setBetType( 3 );
+                showMessage(
+                    "In the section labeled bet square type 1 for red and 2 for black" );
+            }
+            else if ( e.getActionCommand().equals( "evenBet" ) )
+            {
+                roulette.setBetType( 4 );
+                showMessage(
+                    "In the section labeled bet square type 0 for even and 1 for odd" );
+            }
+            else if ( e.getActionCommand().equals( "firstNumBet" ) )
+            {
+                roulette.setBetType( 5 );
+                roulette.setBetSquare( 18 );
+                nsText.setText( "18" );
+                showMessage( "Your chose the bet in the range from 1 to 18." );
+                nsText.setBackground( Color.GRAY );
+                nsText.setEditable( false );
+            }
+            else if ( e.getActionCommand().equals( "secondNumBet" ) )
+            {
+                roulette.setBetType( 6 );
+                roulette.setBetSquare( 36 );
+                nsText.setText( "36" );
+                showMessage( "Your chose the bet in the range from 19 to 36." );
+                nsText.setBackground( Color.GRAY );
+                nsText.setEditable( false );
+            }
+            else if ( e.getActionCommand().equals( "bet" ) )
+            {
+                try
+                {
+                    roulette
+                        .setBetAmount( Integer.parseInt( symbText.getText() ) );
+                    roulette
+                        .setBetSquare( Integer.parseInt( nsText.getText() ) );
+                    showMessage(
+                        "You bet: " + Integer.parseInt( symbText.getText() ) );
+                    int hold = roulette.bet();
+                    if ( hold == -1 )
+                    {
+                        showMessage(
+                            "You did not bet more than $5 or you don't have that much money" );
+                    }
+                    else if ( hold == -2 )
+                    {
+                        showMessage(
+                            "You did not enter a proper bet. Please complete all the fields" );
+                    }
+                    else
+                    {
+                        if ( hold > 0 )
+                        {
+                            showMessage( "You won!" );
+                            showMessage( "You won: " + hold );
+                        }
+                        else
+                        {
+                            showMessage( "You didn't win" );
+                        }
+                    }
+                    showMessage( "You have: " + roulette.getMoney() );
+                }
+                catch ( NumberFormatException ex )
+                {
+                    showMessage( "Please enter an integer." );
+                }
+            }
+            else if ( e.getActionCommand().equals( "back" ) )
+            {
+                CasinoWindow casino = new CasinoWindow();
+                casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+                casino.setBounds( 0, 0, 500, 350 );
+                casino.setVisible( true );
+                dispose();
+            }
+            else if ( e.getActionCommand().equals( "clear" ) )
+            {
+                msgArea.setText( " " );
             }
         }
-        else if ( e.getActionCommand().equals( "back" ))
+        else 
         {
-            CasinoWindow casino = new CasinoWindow();
-            casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-            casino.setBounds( 0, 0, 500, 350 );
-            casino.setVisible( true );
-            dispose();
+            betBtn.setText( "Restart game" );
+            betBtn.setEnabled(true);
+            backBtn.setEnabled( false );
+            clearBtn.setEnabled( false );
+            if (e.getActionCommand().equals( "bet" ))
+            {
+                Roulette r = new Roulette();
+                RouletteWindow casino = new RouletteWindow( r );
+                casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+                casino.setBounds( 0, 0, 500, 350 );
+                casino.setVisible( true );
+                dispose();
+            }
         }
     }
 }
