@@ -1,7 +1,5 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
+package src;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
