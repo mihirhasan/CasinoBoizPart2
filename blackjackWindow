@@ -373,12 +373,15 @@ public class BjackWindow extends JFrame implements ActionListener
             try {
             if(Integer.parseInt( bet.getText() ) < 1)
             {
-                showMessage("Please enter a valid bet");
+                showMessage("Please enter a valid integer bet");
+                bet.setText( "" );
             }
             else if ( blackjack.player.getMoney() < Integer.parseInt( bet.getText() ) )
             {
                 showMessage( "Sorry, you don't have enough money for that." );
-                showMessage( "Your current balance is " + blackjack.player.getMoney() );
+                showMessage( "Balance: " + blackjack.player.getMoney() );
+                bet.setText( "" );
+
             }
             else
             {
@@ -393,11 +396,12 @@ public class BjackWindow extends JFrame implements ActionListener
                     showMessage2( playerHand.get( i ).getName() + "  " );
                 }
                 showMessage("");
+                betBtn.setEnabled( false );
+                hit.setEnabled( true );
+                stay.setEnabled( true );
 
             }
-            hit.setEnabled( true );
-            stay.setEnabled( true );
-            betBtn.setEnabled( false );
+
             }
             catch( Exception ex)
             {  
@@ -420,3 +424,4 @@ public class BjackWindow extends JFrame implements ActionListener
     }
 
 }
+
