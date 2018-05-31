@@ -287,5 +287,4 @@ public class Roulette
         return board;
     }
 
-    
 }
