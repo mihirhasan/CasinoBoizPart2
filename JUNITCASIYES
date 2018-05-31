@@ -7,6 +7,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.*;
+import org.junit.*;
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import junit.framework.JUnit4TestAdapter;
 
 import org.junit.*;
 
@@ -261,4 +267,353 @@ public class JUnitCasiYES
         }
         assertEquals( true, bingo.check());
     }
+}
+
+    /**
+     * Casino tests: cardGetVal - constructs Card and checks value cardGetName -
+     * constructs Card and checks name cardConstructor - constructs Card and
+     * checks set variables cardSetAce - constructs Card and checks setAce
+     * method casinoGetMoney - constructs Casino and checks money casinoSetMoney
+     * - constructs Casino and checks setMoney method casinoAddMoney -
+     * constructs Casino and checks addMoney method casinoRemoveMoney -
+     * constructs Casino and checks removeMoney method (other junits documented
+     * above method)
+     */
+
+    // Card tests
+    @Test
+    public void cardGetVal()
+    {
+
+        String testString = "test";
+        int testInt = 1000;
+
+        Card c = new Card( testString, testInt );
+        assertEquals( testInt, c.getVal() );
+    }
+
+
+    @Test
+    public void cardGetName()
+    {
+        String testString = "test";
+        int testInt = 1000;
+        Card c = new Card( testString, testInt );
+        assertTrue( "Card.getName() returns incorrectly", c.getName() == testString );
+    }
+
+
+    @Test
+    public void cardConstructor()
+    {
+        String testString = "test";
+        int testInt = 1000;
+        Card c = new Card( testString, testInt );
+        assertEquals( c.getVal(), testInt );
+        assertEquals( c.getName(), testString );
+    }
+
+
+    @Test
+    public void cardSetAce()
+    {
+        String testString = "test";
+        int testInt = 1000;
+        Card c = new Card( testString, testInt );
+        c.setAce( 0 );
+        assertTrue( "Card.setAce() returns incorrectly", c.getVal() == 0 );
+    }
+
+
+    // Casino tests
+    @Test
+    public void casinoGetMoney()
+    {
+        int testInt = 1000;
+        Casino c = new Casino( testInt );
+        assertTrue( "Casino.getMoney() returns incorrectly", c.getMoney() == testInt );
+    }
+
+
+    @Test
+    public void casinoConstructor()
+    {
+        int testInt = 1000;
+        Casino c = new Casino( testInt );
+        assertTrue( "Casino constructor doesn't work", c.getMoney() == testInt );
+    }
+
+
+    @Test
+    public void casinoSetMoney()
+    {
+        int testInt = 1000;
+        Casino c = new Casino( testInt );
+        c.setMoney( 0 );
+        assertTrue( "Casino.setMoney() returns incorrectly", c.getMoney() == 0 );
+    }
+
+
+    @Test
+    public void casinoAddMoney()
+    {
+        int testInt = 1000;
+        Casino c = new Casino( testInt );
+        c.addMoney( testInt );
+        assertTrue( "Casino.AddMoney() returns incorrectly", c.getMoney() == 2 * testInt );
+    }
+
+
+    @Test
+    public void casinoRemoveMoney()
+    {
+        int testInt = 1000;
+        Casino c = new Casino( testInt );
+        c.removeMoney( testInt );
+        assertTrue( "Card.RemoveMoney() returns incorrectly", c.getMoney() == 0 );
+    }
+
+
+    // SlotMachine tests
+    /**
+     * 
+     * creates slot machine, checks that result was created by constructor
+     */
+    @Test
+    public void slotConstructor()
+    {
+        SlotMachine s = new SlotMachine();
+        assertEquals( 3, s.getResult().length );
+    }
+
+
+    /**
+     * 
+     * checks that spin method gave user results and reduced balance by 10
+     */
+    @Test
+    public void slotSpin()
+    {
+        int testInt = 100;
+        Casino c = new Casino( testInt );
+        SlotMachine s = new SlotMachine();
+        s.spin();
+        assertEquals( 90, c.getMoney() );
+        assertNotNull( s.getResult()[0] );
+        assertNotNull( s.getResult()[1] );
+        assertNotNull( s.getResult()[2] );
+    }
+
+
+    /**
+     * 
+     * checks that result is returned
+     */
+    @Test
+    public void slotgetResult()
+    {
+        SlotMachine s = new SlotMachine();
+        assertNotNull( s.getResult() );
+    }
+
+
+    /**
+     * 
+     * checks that a payout is determined. Checks all possible scenarios
+     */
+
+    /**
+     * 
+     * checks that result is returned
+     */
+    @Test
+    public void slotgetPay()
+    {
+        SlotMachine s = new SlotMachine();
+        s.spin();
+        assertTrue( s.getPay() >= 0 );
+    }
+
+
+    @Test
+    public void slotPayout()
+    {
+        SlotMachine s = new SlotMachine();
+        // spin will call payout
+        s.spin();
+        if ( s.getResult()[0] == "Fulk" && s.getResult()[1] == "Fulk"
+            && s.getResult()[2] == "Fulk" )
+        {
+            assertEquals( s.getPay(), 9000 );
+        }
+        else if ( ( s.getResult()[0] == "Penguin" && s.getResult()[1] == "Penguin"
+            && s.getResult()[2] == "Penguin" )
+            || ( s.getResult()[0] == "Diamond" && s.getResult()[1] == "Diamond"
+                && s.getResult()[2] == "Diamond" ) )
+        {
+            assertEquals( s.getPay(), 4500 );
+        }
+        else if ( ( s.getResult()[0] != "Fulk" && s.getResult()[0] != "Penguin"
+            && s.getResult()[0] != "Diamond" )
+            && ( s.getResult()[0] == s.getResult()[1] && s.getResult()[1] == s.getResult()[2] ) )
+        {
+            assertEquals( s.getPay(), 900 );
+        }
+        else if ( ( s.getResult()[0] == s.getResult()[1] && s.getResult()[1] != s.getResult()[2] )
+            || ( s.getResult()[1] == s.getResult()[2] && s.getResult()[0] != s.getResult()[2] )
+            || ( s.getResult()[0] == s.getResult()[2] && s.getResult()[1] != s.getResult()[2] ) )
+        {
+            assertEquals( s.getPay(), 20 );
+        }
+
+    }
+
+
+    /**
+     * checks if total returned is correct
+     */
+    @Test
+    public void slotgetTotal()
+    {
+        int testInt = 100;
+        SlotMachine s = new SlotMachine();
+        assertEquals( testInt, s.getTotal() );
+    }
+
+
+    /**
+     * 
+     * checks that starting balance is restored
+     */
+    @Test
+    public void slotgetReset()
+    {
+        int testInt = 90;
+        Casino c = new Casino( testInt );
+        SlotMachine s = new SlotMachine();
+        s.reset();
+        assertEquals( 100, c.getMoney() );
+    }
+
+
+    // Blackjack tests
+    /**
+     * 
+     * tests constructor by creating blackjack object, testing if correct
+     * balance
+     */
+    @Test
+    public void blackjackConstructor()
+    {
+        int testInt = 1000;
+        Blackjack j = new Blackjack();
+        Casino c = new Casino( testInt );
+        assertNotNull( j.getDeck() );
+        assertEquals( 1000, c.getMoney() );
+    }
+
+
+    /**
+     * 
+     * checks that some hand is created
+     */
+    @Test
+    public void blackjacksetHand()
+    {
+        Blackjack j = new Blackjack();
+        j.setHand();
+        for ( Card c : j.getPlayer() )
+        {
+            assertNotNull( c );
+        }
+    }
+
+
+    /**
+     * 
+     * checks that both hands are cleared by checking each element.
+     */
+    @Test
+    public void blackjackclearHands()
+    {
+        Blackjack j = new Blackjack();
+        j.setHand();
+        for ( Card c : j.getPlayer() )
+        {
+            assertNull( c );
+        }
+        for ( Card c : j.getDealer() )
+        {
+            assertNull( c );
+        }
+
+    }
+
+
+    /**
+     * 
+     * checks that something is returned.
+     */
+    @Test
+    public void blackjackgetPlayer()
+    {
+        Blackjack j = new Blackjack();
+
+        assertNotNull( j.getPlayer() );
+
+    }
+
+
+    /**
+     * 
+     * checks that something is returned
+     */
+    @Test
+    public void blackjackgetDealer()
+    {
+        Blackjack j = new Blackjack();
+        for ( Card c : j.getDealer() )
+        {
+            assertNotNull( c );
+        }
+    }
+
+
+    /**
+     * 
+     * checks that it correctly calculates a sum by using a test case
+     */
+    @Test
+    public void blackjackgetSum()
+    {
+        Blackjack j = new Blackjack();
+        Card ten = new Card( "ten", 10 );
+        Card two = new Card( "two", 2 );
+        ArrayList<Card> cards = new ArrayList<Card>();
+        cards.add( ten );
+        cards.add( two );
+        assertEquals( 12, j.getSum( cards ) );
+    }
+
+
+    /**
+     * 
+     * uses a test case to test that the hand is increased by one card
+     */
+    @Test
+    public void blackjackHit()
+    {
+        Blackjack j = new Blackjack();
+        Card ten = new Card( "ten", 10 );
+        Card two = new Card( "two", 2 );
+        ArrayList<Card> cards = new ArrayList<Card>();
+        cards.add( ten );
+        cards.add( two );
+        j.hit( cards );
+        assertNotNull( cards.get( 0 ) );
+        assertNotNull( cards.get( 1 ) );
+        assertNotNull( cards.get( 2 ) );
+
+    }
+
 }
