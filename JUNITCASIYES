@@ -1,0 +1,264 @@
+package src;
+
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.regex.*;
+
+import org.junit.*;
+
+import static org.junit.Assert.*;
+import junit.framework.JUnit4TestAdapter;
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+
+public class JUnitCasiYES
+{
+    // Roulette Testing--------------------------------------------------------
+    /**
+     * Checks if the constructor works in roulette
+     */
+    @Test
+    public void rouletteConstructorTest()
+    {
+        Roulette r = new Roulette();
+        assertEquals( (int)r.getMoney(), 1000 );
+        assertEquals( (int)r.getBoard().get( 0 ), 0 );
+        assertEquals( r.getBoard().keySet().size(), 37 );
+    }
+
+
+    /**
+     * Checks the roulette accessor methods. 
+     */
+    @Test
+    public void rouletteAccessorMethod()
+    {
+        Roulette r = new Roulette();
+        r.setBetAmount( 50 );
+        r.setBetSquare( 14 );
+        r.setBetType( 4 );
+        assertEquals( r.getBetAmount(), 50 );
+        assertEquals( r.getBetSquare(), 14 );
+        assertEquals( r.getBetType(), 4 );
+    }
+
+
+    /**
+     * Tests the bet method in roulette for all scenarios
+     */
+    @Test
+    public void rouletteBetMethod()
+    {
+        Roulette r = new Roulette( 1 );
+        r.setBetAmount( 5 );
+        // Testing the square
+        r.setBetType( 1 );
+        r.setBetSquare( 1 );
+        assertEquals( r.bet(), 180 );
+        // Testing the column
+        r.setBetType( 2 );
+        r.setBetSquare( 1 );
+        assertEquals( r.bet(), 15 );
+        // Testing the color
+        r.setBetType( 3 );
+        r.setBetSquare( 1 );
+        assertEquals( r.bet(), 10 );
+        // Testing Even or odd
+        r.setBetType( 4 );
+        r.setBetSquare( 1 );
+        assertEquals( r.bet(), 10 );
+        // Testing 1 to 18
+        Roulette test = new Roulette( 18 );
+        test.setBetAmount( 5 );
+        test.setBetType( 5 );
+        test.setBetSquare( 18 );
+        assertEquals( test.bet(), 10 );
+        // Testing 19 to 36
+        Roulette test2 = new Roulette( 20 );
+        test2.setBetAmount( 5 );
+        test2.setBetType( 6 );
+        test2.setBetSquare( 36 );
+        assertEquals( test2.bet(), 10 );
+        // Testing too much and too little money
+        Roulette test3 = new Roulette();
+        test3.setBetAmount( 1005 );
+        test3.setBetType( 5 );
+        test3.setBetSquare( 18 );
+        assertEquals( test3.bet(), -1 );
+        Roulette test4 = new Roulette();
+        test4.setBetAmount( 2 );
+        test4.setBetType( 5 );
+        test4.setBetSquare( 18 );
+        assertEquals( test4.bet(), -1 );
+        // Testing failure
+        Roulette r2 = new Roulette( 20 );
+        r2.setBetType( 1 );
+        r2.setBetAmount( 100 );
+        r2.setBetSquare( 2 );
+        assertEquals( r2.bet(), 0 );
+    }
+
+
+    /**
+     * Test the bingo constructor
+     */
+    @Test
+    public void bingoConstructor()
+    {
+        Bingo bingo = new Bingo();
+        assertEquals( bingo.myBoard().length, 5 );
+        assertEquals( bingo.myBoard()[0].length, 5 );
+        assertNotNull( bingo.getRand() );
+    }
+
+
+    /**
+     * Checks if the check method works on horizontal
+     */
+    @Test
+    public void bingoCheckHorzMethod()
+    {
+        Bingo bingo = new Bingo();
+        int[][] test = new int[5][5];
+        for ( int col = 1; col <= 5; col++ )
+        {
+            for ( int row = 0; row < 5; row++ )
+            {
+                test[row][col - 1] = 1;
+            }
+        }
+        for ( int r = 0; r < 5; r++ )
+        {
+            test[r][0] = 0;
+        }
+        bingo.setBoard( test );
+        assertEquals( true, bingo.check() );
+    }
+
+
+    /**
+     * Sees if the check method works in vertical
+     */
+    @Test
+    public void bingoCheckVertMethod()
+    {
+        Bingo bingo = new Bingo();
+        int[][] test = new int[5][5];
+        for ( int col = 1; col <= 5; col++ )
+        {
+            for ( int row = 0; row < 5; row++ )
+            {
+                test[row][col - 1] = 1;
+            }
+        }
+        for ( int r = 0; r < 5; r++ )
+        {
+            test[0][r] = 0;
+        }
+        bingo.setBoard( test );
+        assertEquals( true, bingo.check() );
+    }
+
+
+    /**
+     * Sees if the check() method works in diagonal
+     */
+    @Test
+    public void bingoCheckCross()
+    {
+        int[][] test = new int[5][5];
+        for ( int col = 1; col <= 5; col++ )
+        {
+            for ( int row = 0; row < 5; row++ )
+            {
+                test[row][col - 1] = 1;
+            }
+        }
+        for ( int row = 0; row < 5; row++ )
+        {
+            test[row][row] = 0;
+        }
+
+        Bingo bingo = new Bingo();
+        bingo.setBoard( test );
+        assertEquals( true, bingo.check() );
+    }
+
+
+    /**
+     * Sees if the check() method works in diagonal reverse
+     */
+    @Test
+    public void bingoCheckVertAcross()
+    {
+        int[][] test = new int[5][5];
+        for ( int col = 1; col <= 5; col++ )
+        {
+            for ( int row = 0; row < 5; row++ )
+            {
+                test[row][col - 1] = 1;
+            }
+        }
+        int down = 4;
+        for ( int other = 0; other < 5; other++ )
+        {
+            test[down][other] = 0;
+            down--;
+        }
+
+        Bingo bingo = new Bingo();
+        bingo.setBoard( test );
+        assertEquals( true, bingo.check() );
+    }
+    
+    /**
+     * Sees if teh check() method returns false
+     */
+    @Test 
+    public void bingoCheckFalse()
+    {
+        int[][] test = new int[5][5];
+        for ( int col = 1; col <= 5; col++ )
+        {
+            for ( int row = 0; row < 5; row++ )
+            {
+                test[row][col - 1] = 1;
+            }
+        }
+        Bingo bingo = new Bingo();
+        bingo.setBoard( test );
+        assertEquals( false, bingo.check() );
+    }
+
+
+    /**
+     * Tests the ability to draw a bingo board
+     */
+    @Test
+    public void bingoDrawBoard()
+    {
+        Bingo bingo = new Bingo();
+        bingo.drawBoard();
+        assertNotNull( bingo.myBoard() );
+    }
+    
+    /**
+     * Tests the bingo increment method.
+     */
+    @Test
+    public void bingoIncrement()
+    {
+        Bingo bingo = new Bingo();
+        bingo.drawBoard();
+        while( bingo.check() == false)
+        {
+            bingo.increment();
+        }
+        assertEquals( true, bingo.check());
+    }
+}
