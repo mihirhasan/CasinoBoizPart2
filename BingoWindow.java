@@ -17,10 +17,12 @@ public class BingoWindow extends JFrame implements ActionListener
     private JTextArea msgArea;
 
     private JLabel[][] labels = new JLabel[5][5];
-    
-    private JButton betBtn, nextBtn;
-    
-    private int check =0;
+
+    private JButton betBtn, nextBtn, backBtn;
+
+    private int check = 0;
+
+    private int money = 100;
 
 
     /**
@@ -59,20 +61,19 @@ public class BingoWindow extends JFrame implements ActionListener
             }
         }
 
-       
         for ( int row = 0; row < 5; row++ )
         {
             for ( int col = 0; col < 5; col++ )
             {
                 gbc.gridy = col + 1;
-                gbc.gridx = row ;
+                gbc.gridx = row;
                 gbc.gridwidth = 1;
                 gbLayout.setConstraints( labels[row][col], gbc );
-                //panel.add( labels[row][col] );
+                // panel.add( labels[row][col] );
             }
         }
-        
-        betBtn = new JButton("Start Game");
+
+        betBtn = new JButton( "Start Game" );
         betBtn.addActionListener( this );
         betBtn.setActionCommand( "start" );
         gbc.gridy = 0;
@@ -80,8 +81,8 @@ public class BingoWindow extends JFrame implements ActionListener
         gbc.gridwidth = 1;
         gbLayout.setConstraints( betBtn, gbc );
         panel.add( betBtn );
-        
-        nextBtn = new JButton("Next Number");
+
+        nextBtn = new JButton( "Next Number" );
         nextBtn.addActionListener( this );
         nextBtn.setActionCommand( "next" );
         gbc.gridy = 1;
@@ -90,17 +91,25 @@ public class BingoWindow extends JFrame implements ActionListener
         gbLayout.setConstraints( nextBtn, gbc );
         panel.add( nextBtn );
         nextBtn.setEnabled( false );
-        
+
+        backBtn = new JButton( "Back" );
+        backBtn.addActionListener( this );
+        backBtn.setActionCommand( "back" );
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+        gbLayout.setConstraints( backBtn, gbc );
+        panel.add( backBtn );
 
         msgArea = new JTextArea( 100, 300 );
         msgArea.setLineWrap( true );
         msgArea.setWrapStyleWord( true );
         msgArea.setEditable( false );
         msgArea.setBorder( new EmptyBorder( 5, 10, 5, 10 ) );
-        msgArea.setText("The game has just begun. "
-                        + "Press the next button to select a number. "
-                        + "If the number drawn is the same as on your "
-                        + "bingo card the number will change to 0.");
+        msgArea.setText( "The game has just begun. "
+            + "Press the next button to select a number. "
+            + "If the number drawn is the same as on your "
+            + "bingo card the number will change to 0." );
         JScrollPane areaScrollPane = new JScrollPane( msgArea );
         areaScrollPane.setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
@@ -117,8 +126,9 @@ public class BingoWindow extends JFrame implements ActionListener
         setBounds( x, y, 500, 500 );
         setVisible( true );
     }
-    
-    public void showMessage(String msg)
+
+
+    public void showMessage( String msg )
     {
         msgArea.append( msg );
     }
@@ -127,52 +137,76 @@ public class BingoWindow extends JFrame implements ActionListener
     @Override
     public void actionPerformed( ActionEvent e )
     {
-        if (e.getActionCommand().equals( "start" ))
+        betBtn.setText( "Start Game" );
+        if ( money > 0 )
         {
-            nextBtn.setEnabled( true );
-            check = 0;
-            bingo.drawBoard();
-            msgArea.setText( "" );
-            for ( int col = 0; col < 5; col++ )
+            if ( e.getActionCommand().equals( "start" ) )
             {
-                for ( int row = 0; row < 5; row++ )
+                nextBtn.setEnabled( true );
+                check = 0;
+                bingo.drawBoard();
+                msgArea.setText( "" );
+                for ( int col = 0; col < 5; col++ )
                 {
-                    msgArea.append( bingo.myBoard()[row][col] + "\t" );
+                    for ( int row = 0; row < 5; row++ )
+                    {
+                        msgArea.append( bingo.myBoard()[row][col] + "\t" );
+                    }
+                    msgArea.append( "\n" );
                 }
-                msgArea.append( "\n");
+                money -= 10;
+                betBtn.setEnabled( false );
             }
-            betBtn.setEnabled( false );
-        }
-        else if (e.getActionCommand().equals( "next" ) && check < 50)
-        {
-            int num = bingo.increment();
-            msgArea.setText( "" );
-            for ( int col = 0; col < 5; col++ )
+            else if ( e.getActionCommand().equals( "next" ) && check < 50 )
             {
-                for ( int row = 0; row < 5; row++ )
+                int num = bingo.increment();
+                msgArea.setText( "" );
+                for ( int col = 0; col < 5; col++ )
                 {
-                    msgArea.append( bingo.myBoard()[row][col] + "\t" );
+                    for ( int row = 0; row < 5; row++ )
+                    {
+                        msgArea.append( bingo.myBoard()[row][col] + "\t" );
+                    }
+                    msgArea.append( "\n" );
                 }
-                msgArea.append( "\n");
+                check++;
+                msgArea.append( "\n" + "The number selected was " + num
+                    + ". You are on turn " + check );
+
+                if ( bingo.check() )
+                {
+                    money += 20;
+                    msgArea.append( "\n" + "You won 20 coins" );
+                    msgArea.append( "\n" + "Your balance is: " + money );
+                    nextBtn.setEnabled( false );
+                    betBtn.setEnabled( true );
+                }
             }
-            check++;
-            msgArea.append( "\n" + "The number selected was " + num +". You are on turn " + check);
-            
-            if(bingo.check())
+            else if ( check >= 50 )
             {
-                msgArea.append( "\n" + "You won $100" );
-                nextBtn.setEnabled( false);
+                msgArea
+                    .setText( "You lost 10 coins. Sorry please play again." );
+                msgArea.setText( "Your balance is: " + money );
                 betBtn.setEnabled( true );
+                nextBtn.setEnabled( false );
             }
+
         }
-        else if (check >= 50)
+        else
         {
-            msgArea.setText( "You lost $50. Sorry please play again." );
+            betBtn.setText( "Start Over" );
             betBtn.setEnabled( true );
             nextBtn.setEnabled( false );
+            money = 100;
         }
-        
-
+        if ( e.getActionCommand().equals( "back" ) )
+        {
+            CasinoWindow casino = new CasinoWindow();
+            casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            casino.setBounds( 0, 0, 500, 350 );
+            casino.setVisible( true );
+            dispose();
+        }
     }
 
 }
