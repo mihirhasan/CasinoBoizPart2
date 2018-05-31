@@ -57,6 +57,7 @@ public class SlotMachine
      */
     public void payout()
     {
+        toAdd = 0;
         // 90% money back ratio
         // House always makes a profit, user makes about 90% of their money back
         // 900:1 jackpot 1/1000 chance of winning
@@ -65,19 +66,18 @@ public class SlotMachine
             toAdd = 9000;
         }
         // 450:1 jackpot 1/500 chance of winning
-        if ( ( results[0] == "Penguin" && results[1] == "Penguin" && results[2] == "Penguin" )
+        else if ( ( results[0] == "Penguin" && results[1] == "Penguin" && results[2] == "Penguin" )
             || ( results[0] == "Diamond" && results[1] == "Diamond" && results[2] == "Diamond" ) )
         {
             toAdd = 4500;
         }
         // 90:1 1/100 chance of winning
-        if ( ( results[0] != "Fulk" && results[0] != "Penguin" && results[0] != "Diamond" )
+        else  if ( ( results[0] != "Fulk" && results[0] != "Penguin" && results[0] != "Diamond" )
             && ( results[0] == results[1] && results[1] == results[2] ) )
         {
             toAdd = 900;
         }
-        // 2:1 Jackpot for 2 of a kind ~1/3 chance of winning
-        if ( ( results[0] == results[1] && results[1] != results[2] )
+        else if ( ( results[0] == results[1] && results[1] != results[2] )
             || ( results[1] == results[2] && results[0] != results[2] )
             || ( results[0] == results[2] && results[1] != results[2] ) )
         {
