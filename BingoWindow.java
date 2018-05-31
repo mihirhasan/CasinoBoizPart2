@@ -1,4 +1,4 @@
-package src;
+package test;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -106,7 +106,7 @@ public class BingoWindow extends JFrame implements ActionListener
         msgArea.setWrapStyleWord( true );
         msgArea.setEditable( false );
         msgArea.setBorder( new EmptyBorder( 5, 10, 5, 10 ) );
-        msgArea.setText( "The game has just begun. "
+        msgArea.setText( "The game has begun. You start with 100 dollars, and it costs 10 dollars to play a game of bingo."
             + "Press the next button to select a number. "
             + "If the number drawn is the same as on your "
             + "bingo card the number will change to 0." );
@@ -155,6 +155,7 @@ public class BingoWindow extends JFrame implements ActionListener
                     msgArea.append( "\n" );
                 }
                 money -= 10;
+                
                 betBtn.setEnabled( false );
             }
             else if ( e.getActionCommand().equals( "next" ) && check < 50 )
@@ -185,8 +186,8 @@ public class BingoWindow extends JFrame implements ActionListener
             else if ( check >= 50 )
             {
                 msgArea
-                    .setText( "You lost 10 coins. Sorry please play again." );
-                msgArea.setText( "Your balance is: " + money );
+                    .setText( "You lost 10 coins. Sorry, please play again." );
+                msgArea.setText( "Balance: " + money );
                 betBtn.setEnabled( true );
                 nextBtn.setEnabled( false );
             }
@@ -201,7 +202,7 @@ public class BingoWindow extends JFrame implements ActionListener
         }
         if ( e.getActionCommand().equals( "back" ) )
         {
-            CasinoWindow casino = new CasinoWindow();
+            casinoWindow casino = new casinoWindow();
             casino.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
             casino.setBounds( 0, 0, 500, 350 );
             casino.setVisible( true );
